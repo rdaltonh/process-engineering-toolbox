@@ -19,7 +19,7 @@ from proctoolbox_core.io import Project
 from proctoolbox_core.loads import asce7_16 as asce
 from proctoolbox_core.materials import MaterialDataError, default_database
 from proctoolbox_core.piping import list_nps, list_schedules
-from proctoolbox_core.ui import load_app_meta, page_header, save_load_panel, unit_system_toggle, warning_banner
+from proctoolbox_core.ui import load_app_meta, page_header, save_load_panel, unit_system_toggle, warning_badge
 from proctoolbox_core.units import UNIT_SYSTEMS, display_unit, from_si, to_si
 
 from span_calc import (
@@ -184,116 +184,130 @@ def apply_inputs(inp: SpanInputs, ui_state: dict) -> None:
         s["sc_nps_from"], s["sc_nps_to"] = inp.nps_list[0], inp.nps_list[-1]
 
 
-def _label(options: dict[str, str]):
-    return lambda k: options.get(k, k)
-
-
-# ---------------------------------------------------------------- inputs UI
+# ---------------------------------------------------------------- layout
 
 page_header(META)
 unit_system_toggle(on_change=_on_unit_change)
+left, right = st.columns([5, 7], gap="large")
 
-with st.container(border=True):
-    st.markdown("**Pipe**")
-    c1, c2, c3, c4, c5 = st.columns([3, 2, 2, 2, 2])
-    c1.selectbox("Material", DB.ids(), key="sc_material", format_func=lambda m: DB.material(m).name)
-    c2.selectbox("Schedule", list_schedules(), key="sc_schedule")
-    c3.radio("Mode", ["Size sweep", "Single size"], key="sc_mode", horizontal=True)
-    if st.session_state["sc_mode"] == "Single size":
-        c4.selectbox("NPS", list_nps(), key="sc_nps")
-    else:
-        c4.selectbox("From NPS", list_nps(), key="sc_nps_from")
-        c5.selectbox("To NPS", list_nps(), key="sc_nps_to")
-    pipe_box = st.container()
-
-with st.container(border=True):
-    st.markdown("**Design condition & allowables (B31.3)**")
-    c1, c2, c3 = st.columns(3)
-    c1.number_input(f"Design temperature ({u('temperature')})", key="sc_T", help="v1 range: -40°F to +300°F")
-    c1.number_input(f"Design pressure, gauge ({u('pressure')})", key="sc_P", min_value=0.0,
-                    help="Adds longitudinal pressure stress P·Do/(4t) to every case.")
-    c1.number_input("Specific gravity of contents (water @ 60°F = 1.0)", key="sc_sg", min_value=0.0, step=0.05,
-                    help="0 = empty pipe")
-    c2.markdown("Sh from **B31.3 Table A-1** at design temperature (sustained ≤ Sh, occasional ≤ 1.33 Sh).")
-    c2.checkbox("Override Sh", key="sc_override_on")
-    if st.session_state["sc_override_on"]:
-        c2.number_input(f"Sh override ({u('stress')})", key="sc_Sh_override", min_value=0.0, placeholder="Required")
-        c2.text_input("Override source", key="sc_Sh_src", placeholder="e.g. B31.3-2022 Table A-1, A106 B @ 300°F")
-    c3.number_input(f"Deflection limit ({u('deflection')})", key="sc_defl", min_value=0.0, placeholder="Required",
-                    help="Checked on pipe + contents only. Common practice is 0.1 in (2.5 mm); a design choice, not a code value.")
-    c3.text_input("Deflection limit basis", key="sc_defl_basis",
-                  placeholder="e.g. project piping spec / drainage requirement")
-
-with st.container(border=True):
-    st.markdown("**Section basis & beam model**")
-    c1, c2 = st.columns(2)
-    c1.number_input(f"Corrosion allowance ({u('small_length')})", key="sc_ca", min_value=0.0,
-                    step=0.01 if _units() == "US" else 0.5, format="%.3f")
-    c1.checkbox("Apply 12.5% mill under-tolerance to wall (for Z, I, and pressure stress)", key="sc_mill")
-    c2.multiselect("End conditions", list(END_CONDITIONS), key="sc_conds", format_func=END_CONDITIONS.get)
-    c2.number_input("Number of spans (continuous)", key="sc_nspans", min_value=2, max_value=10, step=1)
+# ---------------------------------------------------------------- inputs (left, scrollable)
 
 ref_boxes: dict = {}
-with st.container(border=True):
-    st.markdown("**Environmental loads (ASCE 7-16)**: each toggles its own load case(s)")
-    t1, t2, t3, t4 = st.columns(4)
-    t1.toggle("Wind", key="sc_wind")
-    t2.toggle("Snow", key="sc_snow")
-    t3.toggle("Ice", key="sc_ice")
-    t4.toggle("Seismic", key="sc_eq")
-    s = st.session_state
-    if s["sc_wind"] or s["sc_snow"] or s["sc_ice"] or s["sc_eq"]:
-        st.markdown("*Site (shared)*")
-        c1, c2, c3, c4, c5 = st.columns(5)
-        c1.selectbox("Risk category", asce.RISK_CATEGORIES, key="sc_rc", help="Table 1.5-1")
-        c2.selectbox("Exposure", asce.EXPOSURES, key="sc_exp", help="Sec. 26.7.3")
-        c3.number_input(f"Pipe height above grade z ({u('length')})", key="sc_z", min_value=0.0)
-        c4.number_input("K_zt", key="sc_kzt", min_value=1.0, step=0.05, help="Topographic factor, 1.0 if flat (Sec. 26.8.2)")
-        c5.number_input(f"Ground elevation ({u('length')})", key="sc_elev", min_value=0.0, placeholder="K_e = 1.0",
-                        help="For K_e (Table 26.9-1). Blank uses K_e = 1.0 (always permitted).")
-        st.number_input(f"Insulation thickness ({u('small_length')})", key="sc_ins", min_value=0.0,
-                        help="Projected diameter D = OD + 2 × insulation, filled in per pipe size (ASCE 7-16 Fig. 7.13-2 note). "
-                             "Affects wind/snow/ice area only; insulation weight is not included.")
-    if s["sc_wind"]:
-        st.markdown("*Wind (Ch. 26/29): OCC-WIND = W+P + 0.6W*")
-        c1, c2, c3 = st.columns(3)
-        c1.number_input(f"Basic wind speed V ({u('speed')})", key="sc_V", min_value=0.0, help="Fig. 26.5-1 for risk category")
-        c2.selectbox("Surface", asce.SURFACE_ROUGHNESS, key="sc_rough", format_func=lambda x: x.replace("_", " "),
-                     help="Fig. 29.4-1 (only used when D·√q_z > 2.5)")
-        c3.number_input("C_f override", key="sc_cf", min_value=0.0, placeholder="Fig. 29.4-1")
-        ref_boxes["wind"] = st.expander("ASCE 7-16 wind: code tables & worked values")
-    if s["sc_snow"]:
-        st.markdown("*Snow (Sec. 7.13.3, Fig. 7.13-2)*")
-        c1, c2, c3, c4 = st.columns(4)
-        c1.number_input(f"Ground snow p_g ({u('area_load')})", key="sc_pg", min_value=0.0, help="Fig. 7.2-1 / site study")
-        c2.selectbox("Exposure condition", asce.SNOW_EXPOSURE_CONDITIONS, key="sc_snowcond",
-                     format_func=lambda x: x.replace("_", " "), help="Table 7.3-1")
-        c3.radio("Treat snow as", [SUSTAINED, OCCASIONAL], key="sc_snowcat", horizontal=True,
-                 help="B31.3 301.6 lists snow under weight effects (sustained); occasional uses 1.33 Sh.")
-        c4.checkbox("Wintertime pipe surface > 45°F (exempt)", key="sc_warm", help="Sec. 7.13.3")
-        ref_boxes["snow"] = st.expander("ASCE 7-16 snow: code tables & worked values")
-    if s["sc_ice"]:
-        st.markdown("*Ice (Ch. 10): OCC-ICE = W+P + 0.7Di + 0.7Wi (+S)*")
-        c1, c2, c3 = st.columns(3)
-        c1.number_input(f"Nominal ice thickness t ({u('small_length')})", key="sc_t_ice", min_value=0.0,
-                        help="Figs. 10.4-2 to 10.4-6")
-        c2.number_input(f"Concurrent wind V_c ({u('speed')})", key="sc_Vc", min_value=0.0, help="Figs. 10.4-2 to 10.4-6")
-        c3.radio("Treat ice weight as", [SUSTAINED, OCCASIONAL], key="sc_icecat", horizontal=True,
-                 help="Sustained adds 0.7Di to the SUS case (ASCE 2.4.3 item 4).")
-        ref_boxes["ice"] = st.expander("ASCE 7-16 ice: code tables & worked values")
-    if s["sc_eq"]:
-        st.markdown("*Seismic (Sec. 13.3.1): OCC-SEISMIC = W+P + 0.7(Ev + Eh)*")
-        c1, c2, c3, c4 = st.columns(4)
-        c1.number_input("S_DS (g)", key="sc_sds", min_value=0.0, step=0.05, help="Sec. 11.4.5")
-        c2.selectbox("I_p", [1.0, 1.5], key="sc_ip", help="Sec. 13.1.3")
-        c3.number_input(f"Average roof height h ({u('length')})", key="sc_h", min_value=0.0,
-                        help="z/h uses pipe height z above; z/h ≤ 1.0")
-        types = asce.piping_types()
-        c4.selectbox("Piping type (Table 13.6-1)", list(types), key="sc_ptype",
-                     format_func=lambda k: f"{types[k]['label']} (a_p {types[k]['ap']:g}, R_p {types[k]['Rp']:g})")
-        ref_boxes["seismic"] = st.expander("ASCE 7-16 seismic: code tables & worked values")
+with left:
+    inputs_box = st.container(height=700, border=False)
+with inputs_box:
+    with st.container(border=True):
+        st.markdown("**Pipe**")
+        st.selectbox("Material", DB.ids(), key="sc_material", format_func=lambda m: DB.material(m).name)
+        c1, c2 = st.columns(2)
+        c1.selectbox("Schedule", list_schedules(), key="sc_schedule")
+        c2.radio("Mode", ["Size sweep", "Single size"], key="sc_mode", horizontal=True)
+        if st.session_state["sc_mode"] == "Single size":
+            st.selectbox("NPS", list_nps(), key="sc_nps")
+        else:
+            c1, c2 = st.columns(2)
+            c1.selectbox("From NPS", list_nps(), key="sc_nps_from")
+            c2.selectbox("To NPS", list_nps(), key="sc_nps_to")
 
-st.info(SCOPE_NOTE)
+    with st.container(border=True):
+        st.markdown("**Design condition & allowables (B31.3)**")
+        c1, c2 = st.columns(2)
+        c1.number_input(f"Temperature ({u('temperature')})", key="sc_T", help="v1 range: -40°F to +300°F")
+        c2.number_input(f"Pressure, gauge ({u('pressure')})", key="sc_P", min_value=0.0,
+                        help="Adds longitudinal pressure stress P·Do/(4t) to every case.")
+        c1.number_input("Contents SG", key="sc_sg", min_value=0.0, step=0.05,
+                        help="Relative to water at 60°F (= 1.0). 0 = empty pipe.")
+        c2.number_input(f"Deflection limit ({u('deflection')})", key="sc_defl", min_value=0.0, placeholder="Required",
+                        help="Checked on pipe + contents only. Common practice is 0.1 in (2.5 mm); a design choice, not a code value.")
+        st.text_input("Deflection limit basis", key="sc_defl_basis",
+                      placeholder="e.g. project piping spec / drainage requirement")
+        st.checkbox("Override Sh (default: B31.3 Table A-1 at design T; sustained ≤ Sh, occasional ≤ 1.33 Sh)",
+                    key="sc_override_on")
+        if st.session_state["sc_override_on"]:
+            c1, c2 = st.columns(2)
+            c1.number_input(f"Sh override ({u('stress')})", key="sc_Sh_override", min_value=0.0, placeholder="Required")
+            c2.text_input("Override source", key="sc_Sh_src", placeholder="e.g. B31.3-2022 Table A-1")
+
+    with st.container(border=True):
+        st.markdown("**Section basis & beam model**")
+        st.multiselect("End conditions", list(END_CONDITIONS), key="sc_conds", format_func=END_CONDITIONS.get)
+        c1, c2 = st.columns(2)
+        c1.number_input(f"Corrosion allowance ({u('small_length')})", key="sc_ca", min_value=0.0,
+                        step=0.01 if _units() == "US" else 0.5, format="%.3f")
+        c2.number_input("Spans (continuous)", key="sc_nspans", min_value=2, max_value=10, step=1)
+        st.checkbox("Apply 12.5% mill under-tolerance (Z, I, pressure stress)", key="sc_mill")
+
+    with st.container(border=True):
+        st.markdown("**Environmental loads (ASCE 7-16)**")
+        t1, t2, t3, t4 = st.columns(4)
+        t1.toggle("Wind", key="sc_wind")
+        t2.toggle("Snow", key="sc_snow")
+        t3.toggle("Ice", key="sc_ice")
+        t4.toggle("Seismic", key="sc_eq")
+        s = st.session_state
+        enabled = [k for k, on in (("Wind", s["sc_wind"]), ("Snow", s["sc_snow"]), ("Ice", s["sc_ice"]),
+                                   ("Seismic", s["sc_eq"])) if on]
+        if not enabled:
+            st.caption("Off: sustained (W + P) and deflection only. Toggle a load to add its occasional case(s).")
+        else:
+            st.markdown("*Site (shared)*")
+            c1, c2, c3 = st.columns(3)
+            c1.selectbox("Risk category", asce.RISK_CATEGORIES, key="sc_rc", help="Table 1.5-1")
+            c2.selectbox("Exposure", asce.EXPOSURES, key="sc_exp", help="Sec. 26.7.3")
+            c3.number_input("K_zt", key="sc_kzt", min_value=1.0, step=0.05, help="Topographic factor, 1.0 if flat (Sec. 26.8.2)")
+            c1, c2, c3 = st.columns(3)
+            c1.number_input(f"Pipe height z ({u('length')})", key="sc_z", min_value=0.0, help="Centerline above grade")
+            c2.number_input(f"Ground elev. ({u('length')})", key="sc_elev", min_value=0.0, placeholder="K_e = 1.0",
+                            help="For K_e (Table 26.9-1). Blank uses K_e = 1.0 (always permitted).")
+            c3.number_input(f"Insulation ({u('small_length')})", key="sc_ins", min_value=0.0,
+                            help="Projected D = OD + 2 × insulation, filled in per pipe size (Fig. 7.13-2 note). "
+                                 "Affects wind/snow/ice area only; insulation weight not included.")
+            tabs = dict(zip(enabled, st.tabs(enabled)))
+            if "Wind" in tabs:
+                with tabs["Wind"]:
+                    st.caption("OCC-WIND = W + P + 0.6W (Comb. 5)")
+                    c1, c2 = st.columns(2)
+                    c1.number_input(f"Basic wind speed V ({u('speed')})", key="sc_V", min_value=0.0,
+                                    help="Fig. 26.5-1 for risk category")
+                    c2.selectbox("Surface", asce.SURFACE_ROUGHNESS, key="sc_rough",
+                                 format_func=lambda x: x.replace("_", " "), help="Fig. 29.4-1 (used when D·√q_z > 2.5)")
+                    st.number_input("C_f override", key="sc_cf", min_value=0.0, placeholder="Fig. 29.4-1")
+                    ref_boxes["wind"] = st.expander("Code tables & worked values")
+            if "Snow" in tabs:
+                with tabs["Snow"]:
+                    st.caption("Sec. 7.13.3 / Fig. 7.13-2 snow on pipes")
+                    c1, c2 = st.columns(2)
+                    c1.number_input(f"Ground snow p_g ({u('area_load')})", key="sc_pg", min_value=0.0,
+                                    help="Fig. 7.2-1 / site study")
+                    c2.selectbox("Exposure condition", asce.SNOW_EXPOSURE_CONDITIONS, key="sc_snowcond",
+                                 format_func=lambda x: x.replace("_", " "), help="Table 7.3-1")
+                    st.radio("Treat snow as", [SUSTAINED, OCCASIONAL], key="sc_snowcat", horizontal=True,
+                             help="B31.3 301.6 lists snow under weight effects (sustained); occasional uses 1.33 Sh.")
+                    st.checkbox("Wintertime pipe surface > 45°F (snow exempt)", key="sc_warm", help="Sec. 7.13.3")
+                    ref_boxes["snow"] = st.expander("Code tables & worked values")
+            if "Ice" in tabs:
+                with tabs["Ice"]:
+                    st.caption("OCC-ICE = W + P + 0.7D_i + 0.7W_i (+S) (Sec. 2.4.3)")
+                    c1, c2 = st.columns(2)
+                    c1.number_input(f"Ice thickness t ({u('small_length')})", key="sc_t_ice", min_value=0.0,
+                                    help="Figs. 10.4-2 to 10.4-6")
+                    c2.number_input(f"Concurrent wind V_c ({u('speed')})", key="sc_Vc", min_value=0.0,
+                                    help="Figs. 10.4-2 to 10.4-6")
+                    st.radio("Treat ice weight as", [SUSTAINED, OCCASIONAL], key="sc_icecat", horizontal=True,
+                             help="Sustained adds 0.7D_i to the SUS case (Sec. 2.4.3 item 4).")
+                    ref_boxes["ice"] = st.expander("Code tables & worked values")
+            if "Seismic" in tabs:
+                with tabs["Seismic"]:
+                    st.caption("OCC-SEISMIC = W + P + 0.7(E_v + E_h) (Comb. 8)")
+                    c1, c2, c3 = st.columns(3)
+                    c1.number_input("S_DS (g)", key="sc_sds", min_value=0.0, step=0.05, help="Sec. 11.4.5")
+                    c2.selectbox("I_p", [1.0, 1.5], key="sc_ip", help="Sec. 13.1.3")
+                    c3.number_input(f"Roof height h ({u('length')})", key="sc_h", min_value=0.0,
+                                    help="Average roof height; z/h uses pipe height z (≤ 1.0)")
+                    types = asce.piping_types()
+                    st.selectbox("Piping type (Table 13.6-1)", list(types), key="sc_ptype",
+                                 format_func=lambda k: f"{types[k]['label']} (a_p {types[k]['ap']:g}, R_p {types[k]['Rp']:g})")
+                    ref_boxes["seismic"] = st.expander("Code tables & worked values")
 
 # ---------------------------------------------------------------- calculation
 
@@ -322,122 +336,156 @@ def on_load(project: Project) -> None:
     apply_inputs(SpanInputs.from_project_inputs(project.inputs["span"]), project.inputs.get("ui", {}))
 
 
-# ---------------------------------------------------------------- results UI
+# ---------------------------------------------------------------- chart styling
 
 sys_ = _units()
 L_u, d_u, s_u, w_u = u("length"), u("deflection"), u("stress"), u("line_weight")
-MARKERS = {"SUS": "circle", "DEFLECTION": "diamond", "OCC-WIND": "triangle-right", "OCC-WIND+SNOW": "triangle-left",
-           "OCC-SEISMIC": "square", "OCC-SEISMIC+SNOW": "square-open", "OCC-ICE": "star", "OCC-SNOW": "hexagon"}
+_theme = getattr(getattr(st, "context", None), "theme", None)
+DARK = getattr(_theme, "type", "dark") != "light"
+# Reference categorical palette (dataviz skill), fixed per governing case so color follows the case.
+_CASE_ORDER = [DEFLECTION, "SUS", "OCC-WIND", "OCC-SEISMIC", "OCC-ICE", "OCC-WIND+SNOW", "OCC-SEISMIC+SNOW", "OCC-SNOW"]
+_LIGHT = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948"]
+_DARKS = ["#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767"]
+CASE_COLORS = dict(zip(_CASE_ORDER, _DARKS if DARK else _LIGHT))
+MARKERS = {DEFLECTION: "diamond", "SUS": "circle", "OCC-WIND": "triangle-right", "OCC-SEISMIC": "square",
+           "OCC-ICE": "star", "OCC-WIND+SNOW": "triangle-left", "OCC-SEISMIC+SNOW": "square-open", "OCC-SNOW": "hexagon"}
+END_DASH = {"simply_supported": "solid", "fixed_fixed": "dash", "continuous": "dot", "cantilever": "dashdot"}
+LINE_INK = "#8b8a84" if DARK else "#7a7974"
+SURFACE = "#0e1117" if DARK else "#ffffff"
 
-if error:
-    st.warning(f"**Cannot compute:** {error}")
-elif results:
-    warning_banner(results.warnings)
-    st.caption(f"Sh = {from_si(results.allowable, 'stress', sys_):,.0f} {s_u} ({results.allowable_citation}); "
-               f"occasional limit 1.33 Sh = {from_si(1.33 * results.allowable, 'stress', sys_):,.0f} {s_u}; "
-               f"E = {from_si(results.E, 'modulus', sys_):.2f} {u('modulus')}")
-    if results.skipped:
-        st.caption(f"Schedule {inputs.schedule} not listed for NPS: {', '.join(results.skipped)}")
 
-    # Pipe properties and worked values for one size (auto-populated from the evaluated pipe).
-    by_nps = {sz.nps: sz for sz in results.sizes}
-    detail = None
-    if by_nps:
-        with pipe_box:
-            if len(by_nps) > 1:
-                pick = st.selectbox("Show pipe properties & worked load values for NPS", list(by_nps),
-                                    index=min(len(by_nps) - 1, list(by_nps).index("4") if "4" in by_nps else 0),
-                                    key="sc_detail_nps")
-            else:
-                pick = next(iter(by_nps))
-            detail = by_nps[pick]
-            with st.expander(f"Pipe properties: NPS {detail.nps} Sch {detail.schedule}"):
-                span_refs.pipe_properties(detail, sys_)
-    for name, box in ref_boxes.items():
-        with box:
-            getattr(span_refs, name)(inputs, results, detail)
-
-    rows = []
-    for sz in results.sizes:
-        for c in sz.by_condition:
-            row = {
-                "NPS": sz.nps,
-                "End condition": END_CONDITIONS[c.end_condition],
-                f"Span ({L_u})": from_si(c.span, "length", sys_),
-                "Governs": c.governs,
-                f"δ pipe+contents ({d_u})": from_si(c.deflection_pipe_contents, "deflection", sys_),
-                f"δ sustained total ({d_u})": from_si(c.deflection_sustained, "deflection", sys_),
-            }
-            for cs in c.cases:
-                row[f"{cs.case} span ({L_u})"] = from_si(cs.span, "length", sys_)
-            row[f"S_lp pressure ({s_u})"] = from_si(sz.pressure_stress, "stress", sys_)
-            for name, val in sz.loads.items():
-                if val:
-                    row[f"w {name} ({w_u})"] = from_si(val, "line_weight", sys_)
-            row[f"OD ({u('small_length')})"] = from_si(sz.od, "small_length", sys_)
-            row[f"Wall used ({u('small_length')})"] = from_si(sz.wall_used, "small_length", sys_)
-            row[f"Z ({u('section_modulus')})"] = from_si(sz.section_modulus, "section_modulus", sys_)
-            rows.append(row)
-    df = pd.DataFrame(rows)
-
-    if len(results.sizes) == 1:
-        sz = results.sizes[0]
-        st.subheader(f"NPS {sz.nps} Sch {sz.schedule}")
-        cols = st.columns(len(sz.by_condition))
-        for col, c in zip(cols, sz.by_condition):
-            col.metric(END_CONDITIONS[c.end_condition], f"{from_si(c.span, 'length', sys_):.2f} {L_u}",
-                       f"{CASE_LABELS[c.governs]} governs", delta_color="off")
-    elif results.sizes:
-        fig = go.Figure()
-        for cond in inputs.end_conditions:
-            sub = df[df["End condition"] == END_CONDITIONS[cond]]
+def span_chart(results: SpanResults) -> go.Figure:
+    fig = go.Figure()
+    for cond in inputs.end_conditions:
+        xs, ys = [], []
+        for sz in results.sizes:
+            ec = next(c for c in sz.by_condition if c.end_condition == cond)
+            xs.append(sz.nps)
+            ys.append(from_si(ec.span, "length", sys_))
+        fig.add_trace(go.Scatter(x=xs, y=ys, mode="lines", name=END_CONDITIONS[cond], hoverinfo="skip",
+                                 line=dict(color=LINE_INK, width=2, dash=END_DASH[cond]),
+                                 legendgroup="ec", legendgrouptitle_text="End condition"))
+        if xs:
+            fig.add_annotation(x=xs[-1], y=ys[-1], text=END_CONDITIONS[cond], showarrow=False,
+                               xanchor="left", xshift=8, font=dict(size=11))
+    for case in _CASE_ORDER:
+        xs, ys, hover = [], [], []
+        for sz in results.sizes:
+            for ec in sz.by_condition:
+                if ec.governs != case:
+                    continue
+                others = " · ".join(f"{cs.case} {from_si(cs.span, 'length', sys_):.1f}" for cs in ec.cases)
+                xs.append(sz.nps)
+                ys.append(from_si(ec.span, "length", sys_))
+                hover.append(f"<b>NPS {sz.nps} · {END_CONDITIONS[ec.end_condition]}</b><br>"
+                             f"Span {ys[-1]:.2f} {L_u}: {CASE_LABELS[case]} governs<br>"
+                             f"<span style='font-size:11px'>All cases ({L_u}): {others}</span>")
+        if xs:
             fig.add_trace(go.Scatter(
-                x=sub["NPS"], y=sub[f"Span ({L_u})"], mode="lines+markers", name=END_CONDITIONS[cond],
-                marker=dict(symbol=[MARKERS.get(g, "circle") for g in sub["Governs"]], size=10),
-                customdata=sub[["Governs"]],
-                hovertemplate="NPS %{x}<br>Span %{y:.2f} " + L_u + "<br>%{customdata[0]} governs<extra>%{fullData.name}</extra>",
-            ))
-        fig.update_layout(xaxis_title="NPS", yaxis_title=f"Max support span ({L_u})", xaxis=dict(type="category"),
-                          height=460, margin=dict(t=30), legend=dict(orientation="h", y=1.08))
-        st.plotly_chart(fig, width="stretch")
-        present = sorted({g for g in df["Governs"]})
-        st.caption("Governing case markers: " + " · ".join(f"{MARKERS.get(g, 'circle')} = {CASE_LABELS[g]}" for g in present))
+                x=xs, y=ys, mode="markers", name=CASE_LABELS[case], text=hover, hovertemplate="%{text}<extra></extra>",
+                marker=dict(color=CASE_COLORS[case], symbol=MARKERS[case], size=11,
+                            line=dict(color=SURFACE, width=2)),
+                legendgroup="case", legendgrouptitle_text="Governing case"))
+    fig.update_layout(
+        xaxis=dict(title="NPS", type="category", categoryorder="array", categoryarray=list_nps(), showgrid=False),
+        yaxis=dict(title=f"Max support span ({L_u})", rangemode="tozero", gridwidth=1),
+        height=380, margin=dict(t=10, r=95, b=30, l=50), hovermode="closest",
+        legend=dict(orientation="h", y=-0.22, groupclick="toggleitem"),
+    )
+    return fig
 
-    st.dataframe(df, hide_index=True, width="stretch",
-                 column_config={c: st.column_config.NumberColumn(format="%.3f") for c in df.columns if df[c].dtype.kind == "f"})
-    st.download_button("Download table (.csv)", df.to_csv(index=False), file_name="span_chart.csv", mime="text/csv")
 
-    with st.expander("Load cases & basis"):
-        if results.sizes:
-            for cl in results.sizes[0].case_loads:
-                st.markdown(f"- **{CASE_LABELS[cl.case]}**: {CASE_BASIS[cl.case]}")
-            st.markdown(f"- **{CASE_LABELS[DEFLECTION]}**: {CASE_BASIS[DEFLECTION]}")
-        d = results.load_details
-        if "wind" in d:
-            st.markdown(f"- Wind: q_z = {d['wind']['qz_psf']:.2f} psf, K_z = {d['wind']['Kz']:.3f}, "
-                        f"K_e = {d['wind']['Ke']:.3f}, G = {d['wind']['G']}, K_d = 1.0")
-        if "snow" in d:
-            st.markdown(f"- Snow: p_f = {d['snow']['pf_psf']:.2f} psf, γ = {d['snow']['gamma_pcf']:.1f} pcf")
-        if "ice" in d:
-            st.markdown(f"- Ice: t_d = {d['ice']['td_in']:.3f} in (f_z = {d['ice']['fz']:.3f}), "
-                        f"concurrent q_z = {d['ice']['qz_concurrent_psf']:.2f} psf")
-        if "seismic" in d:
-            e = d["seismic"]
-            st.markdown(f"- Seismic: a_p = {e['ap']:g}, R_p = {e['Rp']:g}, F_p/W_p = {e['Fp_over_Wp']:.3f} "
-                        f"(eq. 13.3-1 gives {e['Fp_over_Wp_raw']:.3f}; bound: {e['bound']}), E_v/W_p = {e['Ev_over_Wp']:.3f}")
-        st.markdown("**Data citations**")
-        for c in results.citations:
-            flag = "✓ verified" if c["verified"] else "⚠ unverified"
-            st.markdown(f"- `{c['property']}`: {c['citation']} ({flag})")
-        st.markdown("- ASCE 7-16 loads: Dalton's licensed copy, page cites in `core/loads/data/asce7_16.json` (✓ transcribed from source)")
+# ---------------------------------------------------------------- results (right, always visible)
 
-# ---------------------------------------------------------------- span table generator (PDF)
+with right:
+    if error:
+        st.warning(f"**Cannot compute:** {error}")
+    elif results:
+        warning_badge(results.warnings)
+        st.caption(f"Sh {from_si(results.allowable, 'stress', sys_):,.0f} {s_u} · occasional 1.33 Sh = "
+                   f"{from_si(1.33 * results.allowable, 'stress', sys_):,.0f} {s_u} · "
+                   f"E {from_si(results.E, 'modulus', sys_):.2f} {u('modulus')}"
+                   + (f" · Sch {inputs.schedule} not listed for NPS {', '.join(results.skipped)}" if results.skipped else ""))
+        if len(results.sizes) == 1:
+            sz = results.sizes[0]
+            st.markdown(f"#### NPS {sz.nps} Sch {sz.schedule}")
+            cols = st.columns(len(sz.by_condition))
+            for col, c in zip(cols, sz.by_condition):
+                col.metric(END_CONDITIONS[c.end_condition], f"{from_si(c.span, 'length', sys_):.2f} {L_u}",
+                           f"{CASE_LABELS[c.governs]} governs", delta_color="off")
+        elif results.sizes:
+            st.plotly_chart(span_chart(results), width="stretch")
 
+        summary, full = [], []
+        for sz in results.sizes:
+            for c in sz.by_condition:
+                summary.append({
+                    "NPS": sz.nps, "End condition": END_CONDITIONS[c.end_condition],
+                    f"Span ({L_u})": from_si(c.span, "length", sys_), "Governing case": CASE_LABELS[c.governs],
+                    f"δ pipe+contents ({d_u})": from_si(c.deflection_pipe_contents, "deflection", sys_),
+                    f"δ sustained total ({d_u})": from_si(c.deflection_sustained, "deflection", sys_),
+                })
+                row = {"NPS": sz.nps, "End condition": END_CONDITIONS[c.end_condition],
+                       f"Span ({L_u})": from_si(c.span, "length", sys_), "Governs": c.governs}
+                for cs in c.cases:
+                    row[f"{cs.case} span ({L_u})"] = from_si(cs.span, "length", sys_)
+                row[f"S_lp pressure ({s_u})"] = from_si(sz.pressure_stress, "stress", sys_)
+                for name, val in sz.loads.items():
+                    if val:
+                        row[f"w {name} ({w_u})"] = from_si(val, "line_weight", sys_)
+                row[f"OD ({u('small_length')})"] = from_si(sz.od, "small_length", sys_)
+                row[f"Wall used ({u('small_length')})"] = from_si(sz.wall_used, "small_length", sys_)
+                row[f"Z ({u('section_modulus')})"] = from_si(sz.section_modulus, "section_modulus", sys_)
+                full.append(row)
+        df_sum, df = pd.DataFrame(summary), pd.DataFrame(full)
+
+        tab_sum, tab_all, tab_detail, tab_basis = st.tabs(["Summary", "All cases & loads", "Pipe detail", "Basis"])
+        with tab_sum:
+            st.dataframe(df_sum, hide_index=True, width="stretch", height=250,
+                         column_config={c: st.column_config.NumberColumn(format="%.2f" if "Span" in c else "%.3f")
+                                        for c in df_sum.columns if df_sum[c].dtype.kind == "f"})
+            st.download_button("Download full table (.csv)", df.to_csv(index=False), file_name="span_chart.csv",
+                               mime="text/csv")
+        with tab_all:
+            st.dataframe(df, hide_index=True, width="stretch", height=250,
+                         column_config={c: st.column_config.NumberColumn(format="%.2f" if "span" in c.lower() else "%.3f")
+                                        for c in df.columns if df[c].dtype.kind == "f"})
+        by_nps = {sz.nps: sz for sz in results.sizes}
+        detail = None
+        with tab_detail:
+            if by_nps:
+                if len(by_nps) > 1:
+                    pick = st.selectbox("NPS (also drives the worked values in each load's code-table panel)",
+                                        list(by_nps), index=list(by_nps).index("4") if "4" in by_nps else 0,
+                                        key="sc_detail_nps")
+                else:
+                    pick = next(iter(by_nps))
+                detail = by_nps[pick]
+                st.caption(f"NPS {detail.nps} Sch {detail.schedule}")
+                span_refs.pipe_properties(detail, sys_)
+        with tab_basis:
+            if results.sizes:
+                for cl in results.sizes[0].case_loads:
+                    st.markdown(f"- **{CASE_LABELS[cl.case]}**: {CASE_BASIS[cl.case]}")
+                st.markdown(f"- **{CASE_LABELS[DEFLECTION]}**: {CASE_BASIS[DEFLECTION]}")
+            st.markdown("**Data citations**")
+            for c in results.citations:
+                flag = "✓ verified" if c["verified"] else "⚠ unverified"
+                st.markdown(f"- `{c['property']}`: {c['citation']} ({flag})")
+            st.markdown("- ASCE 7-16 loads: licensed copy, page cites in `core/loads/data/asce7_16.json` (✓ transcribed)")
+            st.caption(SCOPE_NOTE)
+        for name, box in ref_boxes.items():
+            with box:
+                getattr(span_refs, name)(inputs, results, detail)
+
+# ---------------------------------------------------------------- span table generator (PDF) & project file
+
+st.divider()
 with st.container(border=True):
     st.markdown("**Generate span tables (PDF)**: one table per end condition, NPS rows × schedule columns, "
                 "using all inputs above")
-    st.pills("Schedules", list_schedules(), key="tbl_scheds", selection_mode="multi")
-    c1, c2, c3 = st.columns([2, 2, 3])
+    c0, c1, c2, c3 = st.columns([6, 1.3, 1.3, 1.6], vertical_alignment="bottom")
+    c0.pills("Schedules", list_schedules(), key="tbl_scheds", selection_mode="multi")
     c1.selectbox("From NPS", list_nps(), key="tbl_from")
     c2.selectbox("To NPS", list_nps(), key="tbl_to")
     if c3.button("Generate Tables", type="primary", width="stretch"):
@@ -462,7 +510,7 @@ with st.container(border=True):
             {f"Sch {sc}": [("-" if t.cells[cond][n][sc] is None else
                             f"{from_si(t.cells[cond][n][sc][0], 'length', sys_):.1f} {t.cells[cond][n][sc][1]}")
                            for n in t.nps] for sc in t.schedules}, index=t.nps)
-        st.caption(f"Preview: {END_CONDITIONS[cond]}, span ({L_u}) and governing case")
-        st.dataframe(prev, width="stretch")
+        with st.expander(f"Preview: {END_CONDITIONS[cond]}, span ({L_u}) and governing case"):
+            st.dataframe(prev, width="stretch")
 
 save_load_panel(META, build_project, on_load)

@@ -1,6 +1,6 @@
 # Span Chart
 
-**Status:** v0.3.0, available. Specs: `docs/app-specs/span-chart.md` (v1 base) and `docs/app-specs/span-chart-v2-load-cases.md` (load cases, governing).
+**Status:** v0.4.0, available. Specs: `docs/app-specs/span-chart.md` (v1 base) and `docs/app-specs/span-chart-v2-load-cases.md` (load cases, governing).
 
 ## Purpose
 Maximum support spacing for straight horizontal pipe, swept across NPS ½–24 or for a single size.
@@ -26,6 +26,15 @@ Maximum support spacing for straight horizontal pipe, swept across NPS ½–24 o
   - Sh: B31.3 Table A-1 (override available)
   - E: B31.3 App. C. Sh and E are from memory and **unverified**.
   - ASCE 7-16: transcribed from the licensed copy, with page cites.
+
+## Layout
+- Inputs sit in a scrollable left column, and results stay visible on the right.
+- The results column holds:
+  - a one-line warning badge that expands to the full list
+  - the Sh/E summary and the chart, with markers colored and shaped by governing case and line dash by end condition
+  - Summary / All cases & loads / Pipe detail / Basis tabs
+- Load inputs appear as tabs (Wind, Snow, Ice, Seismic) for the loads that are switched on.
+- Span-table PDF generation and the project file sit full-width below.
 
 ## Outputs
 - Governing span and governing case per size and end condition

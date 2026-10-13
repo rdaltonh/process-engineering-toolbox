@@ -29,8 +29,8 @@ def test_launcher_renders():
     assert any("Process Engineering Toolbox" in t.value for t in at.title)
 
 
-def _results_df(at):
-    return next(d.value for d in at.dataframe if "End condition" in getattr(d.value, "columns", []))
+def _results_df(at, column="End condition"):
+    return next(d.value for d in at.dataframe if column in getattr(d.value, "columns", []))
 
 
 def test_span_chart_refuses_then_computes():
@@ -55,7 +55,7 @@ def test_span_chart_all_loads_toggled():
     at.run()
     assert not at.exception
     assert not any("Cannot compute" in w.value for w in at.warning)
-    cols = list(_results_df(at).columns)
+    cols = list(_results_df(at, "Governs").columns)  # "All cases & loads" table
     for case in ("SUS", "OCC-WIND", "OCC-WIND+SNOW", "OCC-SEISMIC", "OCC-SEISMIC+SNOW", "OCC-ICE", "DEFLECTION"):
         assert any(c.startswith(case + " span") for c in cols), case
 

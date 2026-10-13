@@ -11,7 +11,7 @@ Every value below was entered **from memory** (Claude, 2026-10-12) and is flagge
 | Material file | Group | −100°F | 70°F | 200°F | 300°F |
 |---|---|---|---|---|---|
 | `carbon_steel.json` | Carbon steels, C ≤ 0.3% | 30.2 | 29.5 | 28.8 | 28.3 |
-| `ss304.json`, `ss304l.json`, `ss316.json`, `ss316l.json` | Austenitic stainless | 29.0 | 28.3 | 27.6 | 27.0 |
+| `ss304*.json`, `ss316*.json` (incl. dual cert) | Austenitic stainless | 29.0 | 28.3 | 27.6 | 27.0 |
 | `al5083.json` | Aluminum alloys | 10.5 | 10.0 | 9.6 | 9.2 |
 
 - [ ] Carbon steel E  - [ ] Austenitic E  - [ ] Aluminum E (also confirm 5083 sits in this group row)
@@ -35,11 +35,14 @@ The −100 and 0°F entries are my least certain values.
 | `carbon_steel.json` | A106 B / A53 B | 20.0 | 20.0 | 20.0 |
 | `ss304.json` | A312 TP304 | 20.0 | 20.0 | 20.0 |
 | `ss304l.json` | A312 TP304L | 16.7 | 16.7 | 16.7 |
+| `ss304_304l.json` | A312 TP304/304L dual cert | 20.0 | 20.0 | 20.0 |
 | `ss316.json` | A312 TP316 | 20.0 | 20.0 | 20.0 |
 | `ss316l.json` | A312 TP316L | 16.7 | 16.7 | 16.7 |
+| `ss316_316l.json` | A312 TP316/316L dual cert | 20.0 | 20.0 | 20.0 |
 | `al5083.json` | B241 5083-O | 10.7 to 150°F | (none) | (none) |
 
 - [ ] Each row against your edition (note the edition in each file's `citation`)
+- [ ] Dual-certified grades use the straight-grade allowable (20.0 ksi). Confirm the governing clause in your edition (B31.3 / ASME II) and record it in the `citation`
 - [ ] The austenitic "HIGH_SH" note (302.3.2 Note 3 / reduced 1.33 factor). Is it applicable at these temperatures?
 
 ## 2. Densities (lb/in³)
@@ -47,8 +50,8 @@ The −100 and 0°F entries are my least certain values.
 | Material | Value | Notes |
 |---|---|---|
 | Carbon steel | 0.283 | |
-| 304, 304L | 0.289 | |
-| 316, 316L | 0.290 | |
+| 304, 304L, 304/304L | 0.289 | |
+| 316, 316L, 316/316L | 0.290 | |
 | 5083-O | 0.096 | |
 
 - [ ] Confirm each and name a source (e.g. ASME II-D Table PRD, or mill/handbook data)

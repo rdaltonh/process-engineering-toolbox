@@ -149,7 +149,7 @@ Sh (ksi) as a function of temperature, with linear interpolation in the Material
 | 316L | A312 TP316L | 16.7 | 16.7 | 16.7 | |
 | 5083-O | B241 | 10.7 | (none) | (none) | Data to 150°F only, so higher temperatures are refused |
 
-- Dual-certified 304/304L and 316/316L are modeled as the L-grade (lower Sh). That is conservative, and the warning says so.
+- ~~Dual-certified modeled as L-grade~~ **Revised 2026-10-12 (Dalton):** dual-certified 304/304L and 316/316L are separate materials using the straight-grade (higher) Sh, because the pipe meets both grades' requirements. A standing note says to confirm this against the MTR.
 - The Sh override field replaces the table value and requires a source note.
 
 ## 6. Inputs (new or changed)

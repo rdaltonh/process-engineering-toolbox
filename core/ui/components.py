@@ -28,7 +28,12 @@ _WARNING_TITLES = {
     "UNVERIFIED_DATA": "Unverified data",
     "EXTRAPOLATED": "Extrapolated",
     "SERVICE_LIMIT": "Service limit",
+    "SERVICE_NOTE": "Material note",
     "UNCITED_INPUT": "Uncited input",
+    "ASSUMPTION": "Assumption",
+    "HIGH_SH": "Occasional-factor note",
+    "PRESSURE_LIMIT": "Pressure limit",
+    "INFO": "Info",
 }
 
 
@@ -57,6 +62,22 @@ def warning_banner(warnings: list[ProjectWarning]) -> None:
         return
     with st.container(border=True):
         st.markdown(f"**:orange[⚠ {len(warnings)} data warning(s): review before relying on results]**")
+        for w in warnings:
+            title = _WARNING_TITLES.get(w.code, w.code)
+            st.markdown(f"- **{title}**: {w.message}")
+
+
+def warning_badge(warnings: list[ProjectWarning]) -> None:
+    """One-line summary of data warnings that expands to the full list."""
+    if not warnings:
+        st.caption("✓ No data warnings")
+        return
+    counts: dict[str, int] = {}
+    for w in warnings:
+        title = _WARNING_TITLES.get(w.code, w.code.replace("_", " ").title())
+        counts[title] = counts.get(title, 0) + 1
+    summary = " · ".join(f"{n} {t.lower()}{'s' if n > 1 and not t.lower().endswith(('s', 'data', 'info')) else ''}" for t, n in counts.items())
+    with st.expander(f":orange[⚠ {len(warnings)} data warning(s)]: {summary}"):
         for w in warnings:
             title = _WARNING_TITLES.get(w.code, w.code)
             st.markdown(f"- **{title}**: {w.message}")

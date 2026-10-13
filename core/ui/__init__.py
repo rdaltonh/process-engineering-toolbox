@@ -6,6 +6,7 @@ from .components import (
     run_stub,
     save_load_panel,
     unit_system_toggle,
+    warning_badge,
     warning_banner,
 )
 
@@ -17,5 +18,6 @@ __all__ = [
     "run_stub",
     "save_load_panel",
     "unit_system_toggle",
+    "warning_badge",
     "warning_banner",
 ]

@@ -123,3 +123,15 @@ def test_thermal_expansion_strain():
     db = default_database()
     r = db.get("ss304", "thermal_expansion_total", convert(300, "degF", "kelvin"))
     assert r.value * 100 * 12 == pytest.approx(2.61)  # in per 100 ft
+
+
+def test_dual_cert_uses_straight_grade_allowable():
+    db = default_database()
+    T = convert(200, "degF", "kelvin")
+    sh = lambda m: convert(db.get(m, "allowable_stress", T).value, "Pa", "ksi")  # noqa: E731
+    assert sh("ss304_304l") == pytest.approx(sh("ss304")) == pytest.approx(20.0)
+    assert sh("ss316_316l") == pytest.approx(sh("ss316")) == pytest.approx(20.0)
+    assert sh("ss304l") == pytest.approx(16.7) and sh("ss316l") == pytest.approx(16.7)
+    notes = db.service_warnings("ss304_304l", T)
+    assert notes and notes[0].code == "SERVICE_NOTE" and "MTR" in notes[0].message
+    assert not db.service_warnings("ss304l", T)

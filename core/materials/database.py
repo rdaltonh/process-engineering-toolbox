@@ -183,6 +183,9 @@ class MaterialDatabase:
         mat = self.material(material_id)
         out = []
         for note in mat.service_notes:
+            if "T_max" not in note and "T_min" not in note:  # unconditional note
+                out.append(ProjectWarning("SERVICE_NOTE", note["message"], f"materials:{mat.id}"))
+                continue
             T_note = convert(T, "kelvin", note["T_unit"])
             above = "T_max" in note and T_note > note["T_max"]
             below = "T_min" in note and T_note < note["T_min"]
