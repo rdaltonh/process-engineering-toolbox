@@ -1,0 +1,8 @@
+id = "line_sizing_jt"
+name = "Real-Gas Line & JT Sizing"
+category = "fluid_analysis_design"
+status = "planned"
+version = "0.0.0"
+entry = "app.py"
+description = "Single/two-phase helium line sizing via CoolProp with intermediate-back-pressure JT targeting."
+roadmap_note = "Phase 2"

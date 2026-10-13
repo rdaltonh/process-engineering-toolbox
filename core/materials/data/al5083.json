@@ -1,0 +1,106 @@
+{
+ "id": "al5083",
+ "name": "Aluminum 5083-O",
+ "spec": "ASME SB-241 5083-O",
+ "group": "B31.3 App. C: Aluminum alloys",
+ "properties": {
+  "E": {
+   "kind": "tabular",
+   "unit": "Mpsi",
+   "T_unit": "degF",
+   "points": [
+    [
+     -100,
+     10.5
+    ],
+    [
+     70,
+     10.0
+    ],
+    [
+     200,
+     9.6
+    ],
+    [
+     300,
+     9.2
+    ]
+   ],
+   "citation": "ASME B31.3 Appendix C, Table C-6 (Modulus of Elasticity)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Appendix C (Table C-6); UNVERIFIED. Check against your licensed edition and set verified=true."
+  },
+  "thermal_expansion_total": {
+   "kind": "tabular",
+   "unit": "in/100ft",
+   "T_unit": "degF",
+   "points": [
+    [
+     -100,
+     -2.36
+    ],
+    [
+     0,
+     -1.02
+    ],
+    [
+     70,
+     0.0
+    ],
+    [
+     100,
+     0.46
+    ],
+    [
+     200,
+     2.0
+    ],
+    [
+     300,
+     3.61
+    ]
+   ],
+   "reference_T_degF": 70,
+   "citation": "ASME B31.3 Appendix C, Table C-1 (Total Thermal Expansion, in./100 ft, from 70°F)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Appendix C (Table C-1); UNVERIFIED. Check against your licensed edition and set verified=true."
+  },
+  "density": {
+   "kind": "constant",
+   "unit": "lb/in**3",
+   "value": 0.096,
+   "citation": "Nominal density (handbook)",
+   "verified": false,
+   "verification_note": "nominal handbook density from memory; UNVERIFIED. Confirm source and set verified=true."
+  },
+  "allowable_stress": {
+   "kind": "tabular",
+   "unit": "ksi",
+   "T_unit": "degF",
+   "points": [
+    [
+     -40,
+     10.7
+    ],
+    [
+     100,
+     10.7
+    ],
+    [
+     150,
+     10.7
+    ]
+   ],
+   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Table A-1 (Table A-1); UNVERIFIED. Check against your licensed edition and set verified=true."
+  }
+ },
+ "service_notes": [
+  {
+   "T_unit": "degF",
+   "T_max": 150,
+   "message": "Aluminum 5083 (Mg > 3%) above 150°F: B31.3 restricts these alloys at elevated temperature due to sensitization. Verify against Table A-1 notes."
+  }
+ ]
+}

@@ -1,0 +1,8 @@
+id = "vacuum_vessel_designer"
+name = "Vacuum Vessel Designer"
+category = "component_design_material"
+status = "planned"
+version = "0.0.0"
+entry = "app.py"
+description = "UG-28/29/33 vacuum vessel design. Python reimplementation of VacuumVesselDesigner."
+roadmap_note = "Phase 2: reimplement from MATLAB source as reference"

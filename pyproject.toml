@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proctoolbox-core"
+version = "0.1.0"
+description = "Shared core package for the Process Engineering Toolbox"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit>=1.50",
+    "numpy>=2.0",
+    "scipy>=1.13",
+    "pandas>=2.2",
+    "plotly>=5.20",
+    "pint>=0.24",
+    "CoolProp>=7.0",
+    "reportlab>=4.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.setuptools]
+package-dir = { "proctoolbox_core" = "core" }
+packages = [
+    "proctoolbox_core",
+    "proctoolbox_core.units",
+    "proctoolbox_core.io",
+    "proctoolbox_core.ui",
+    "proctoolbox_core.piping",
+    "proctoolbox_core.materials",
+    "proctoolbox_core.fluids",
+    "proctoolbox_core.reporting",
+    "proctoolbox_core.loads",
+]
+
+[tool.setuptools.package-data]
+proctoolbox_core = ["piping/data/*.json", "materials/data/*.json", "loads/data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

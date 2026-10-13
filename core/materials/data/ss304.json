@@ -1,0 +1,109 @@
+{
+ "id": "ss304",
+ "name": "Stainless steel 304",
+ "spec": "ASME SA-312 TP304",
+ "group": "B31.3 App. C: Austenitic stainless steels",
+ "properties": {
+  "E": {
+   "kind": "tabular",
+   "unit": "Mpsi",
+   "T_unit": "degF",
+   "points": [
+    [
+     -100,
+     29.0
+    ],
+    [
+     70,
+     28.3
+    ],
+    [
+     200,
+     27.6
+    ],
+    [
+     300,
+     27.0
+    ]
+   ],
+   "citation": "ASME B31.3 Appendix C, Table C-6 (Modulus of Elasticity)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Appendix C (Table C-6); UNVERIFIED. Check against your licensed edition and set verified=true."
+  },
+  "thermal_expansion_total": {
+   "kind": "tabular",
+   "unit": "in/100ft",
+   "T_unit": "degF",
+   "points": [
+    [
+     -100,
+     -1.86
+    ],
+    [
+     0,
+     -0.77
+    ],
+    [
+     70,
+     0.0
+    ],
+    [
+     100,
+     0.34
+    ],
+    [
+     200,
+     1.46
+    ],
+    [
+     300,
+     2.61
+    ]
+   ],
+   "reference_T_degF": 70,
+   "citation": "ASME B31.3 Appendix C, Table C-1 (Total Thermal Expansion, in./100 ft, from 70°F)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Appendix C (Table C-1); UNVERIFIED. Check against your licensed edition and set verified=true."
+  },
+  "density": {
+   "kind": "constant",
+   "unit": "lb/in**3",
+   "value": 0.289,
+   "citation": "Nominal density (handbook)",
+   "verified": false,
+   "verification_note": "nominal handbook density from memory; UNVERIFIED. Confirm source and set verified=true."
+  },
+  "allowable_stress": {
+   "kind": "tabular",
+   "unit": "ksi",
+   "T_unit": "degF",
+   "points": [
+    [
+     -40,
+     20.0
+    ],
+    [
+     100,
+     20.0
+    ],
+    [
+     200,
+     20.0
+    ],
+    [
+     300,
+     20.0
+    ]
+   ],
+   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Table A-1 (Table A-1); UNVERIFIED. Check against your licensed edition and set verified=true."
+  }
+ },
+ "occasional_notes": [
+  {
+   "code": "HIGH_SH",
+   "message": "Austenitic Sh in Table A-1 can exceed 2/3 of yield at temperature; B31.3 302.3.6 then requires the 1.33 occasional factor to be reduced per 302.3.2 Note 3. Verify for this material and temperature."
+  }
+ ]
+}

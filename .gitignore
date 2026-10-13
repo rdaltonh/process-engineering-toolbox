@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.streamlit/secrets.toml
+
+# Saved project files are user data, not source
+apps/**/projects/*
+!apps/**/projects/.gitkeep
+
+# Reference documents dropped in locally (licensed, never commit)
+_inbox/

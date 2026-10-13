@@ -1,0 +1,8 @@
+id = "procurement_tracker"
+name = "Procurement Tracker"
+category = "project_management_costing"
+status = "planned"
+version = "0.0.0"
+entry = "app.py"
+description = "Existing Python/Streamlit/SQLite tracker. Awaiting move into the suite layout."
+roadmap_note = "Phase 2: layout restructure; SQLite schema preserved as-is"

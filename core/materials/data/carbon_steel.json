@@ -1,0 +1,110 @@
+{
+ "id": "carbon_steel",
+ "name": "Carbon steel (A106 Gr B / A53 Gr B)",
+ "spec": "ASME SA-106 Gr B / SA-53 Gr B",
+ "group": "B31.3 App. C: Carbon steels, C ≤ 0.3%",
+ "properties": {
+  "E": {
+   "kind": "tabular",
+   "unit": "Mpsi",
+   "T_unit": "degF",
+   "points": [
+    [
+     -100,
+     30.2
+    ],
+    [
+     70,
+     29.5
+    ],
+    [
+     200,
+     28.8
+    ],
+    [
+     300,
+     28.3
+    ]
+   ],
+   "citation": "ASME B31.3 Appendix C, Table C-6 (Modulus of Elasticity)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Appendix C (Table C-6); UNVERIFIED. Check against your licensed edition and set verified=true."
+  },
+  "thermal_expansion_total": {
+   "kind": "tabular",
+   "unit": "in/100ft",
+   "T_unit": "degF",
+   "points": [
+    [
+     -100,
+     -1.21
+    ],
+    [
+     0,
+     -0.51
+    ],
+    [
+     70,
+     0.0
+    ],
+    [
+     100,
+     0.23
+    ],
+    [
+     200,
+     0.99
+    ],
+    [
+     300,
+     1.82
+    ]
+   ],
+   "reference_T_degF": 70,
+   "citation": "ASME B31.3 Appendix C, Table C-1 (Total Thermal Expansion, in./100 ft, from 70°F)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Appendix C (Table C-1); UNVERIFIED. Check against your licensed edition and set verified=true."
+  },
+  "density": {
+   "kind": "constant",
+   "unit": "lb/in**3",
+   "value": 0.283,
+   "citation": "Nominal density (handbook)",
+   "verified": false,
+   "verification_note": "nominal handbook density from memory; UNVERIFIED. Confirm source and set verified=true."
+  },
+  "allowable_stress": {
+   "kind": "tabular",
+   "unit": "ksi",
+   "T_unit": "degF",
+   "points": [
+    [
+     -40,
+     20.0
+    ],
+    [
+     100,
+     20.0
+    ],
+    [
+     200,
+     20.0
+    ],
+    [
+     300,
+     20.0
+    ]
+   ],
+   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F)",
+   "verified": false,
+   "verification_note": "transcribed from memory of ASME B31.3 Table A-1 (Table A-1); UNVERIFIED. Check against your licensed edition and set verified=true."
+  }
+ },
+ "service_notes": [
+  {
+   "T_unit": "degF",
+   "T_min": -20,
+   "message": "Carbon steel below -20°F: B31.3 low-temperature toughness (impact testing / MDMT) requirements apply. Verify material qualification."
+  }
+ ]
+}

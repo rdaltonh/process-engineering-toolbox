@@ -1,0 +1,73 @@
+{
+  "edition": "ASCE/SEI 7-16",
+  "verified": true,
+  "verification_note": "Transcribed from Dalton's licensed ASCE 7-16 copy on 2026-10-12; page numbers are printed page numbers.",
+  "wind": {
+    "terrain_exposure_constants": {
+      "citation": "Table 26.11-1, p. 269",
+      "B": {"alpha": 7.0, "zg_ft": 1200.0},
+      "C": {"alpha": 9.5, "zg_ft": 900.0},
+      "D": {"alpha": 11.5, "zg_ft": 700.0}
+    },
+    "kz_formula": {"citation": "Table 26.10-1 Note 1, p. 268", "coefficient": 2.01, "z_min_ft": 15.0},
+    "ke_formula": {"citation": "Table 26.9-1 Note 2, p. 268", "coefficient_per_ft": 0.0000362},
+    "kd_round": {"citation": "Table 26.6-1, Chimneys, Tanks, and Similar Structures: Round, p. 266", "value": 1.0},
+    "gust_factor_rigid": {"citation": "Sec. 26.11.1, p. 269", "value": 0.85},
+    "cf_round_h_over_d_25": {
+      "citation": "Fig. 29.4-1, Round, h/D = 25 column, p. 325",
+      "d_sqrt_qz_threshold": 2.5,
+      "above_threshold": {"moderately_smooth": 0.7, "rough": 0.9, "very_rough": 1.2},
+      "at_or_below_threshold": 1.2
+    },
+    "asd_factor": {"citation": "Sec. 2.4.1 Comb. 5, p. 8", "value": 0.6}
+  },
+  "snow": {
+    "pf_coefficient": {"citation": "Eq. 7.3-1, p. 51", "value": 0.7},
+    "exposure_factor_ce": {
+      "citation": "Table 7.3-1, p. 58",
+      "B": {"fully_exposed": 0.9, "partially_exposed": 1.0, "sheltered": 1.2},
+      "C": {"fully_exposed": 0.9, "partially_exposed": 1.0, "sheltered": 1.1},
+      "D": {"fully_exposed": 0.8, "partially_exposed": 0.9, "sheltered": 1.0}
+    },
+    "thermal_factor_ct_unheated": {"citation": "Table 7.3-2 (unheated and open air structures); Sec. 7.13, pp. 58, 63", "value": 1.2},
+    "density": {"citation": "Eq. 7.7-1, p. 59", "a": 0.13, "b_pcf": 14.0, "max_pcf": 30.0},
+    "pipe_method": {
+      "citation": "Sec. 7.13.3, Fig. 7.13-2a/b, p. 64",
+      "transition_coefficient": 0.73,
+      "triangle_height_over_d": 1.37,
+      "angle_of_repose_deg": 70.0,
+      "exempt_surface_temp_degF": 45.0
+    }
+  },
+  "importance_factors": {
+    "citation": "Table 1.5-2, p. 5",
+    "snow_Is": {"I": 0.80, "II": 1.00, "III": 1.10, "IV": 1.20},
+    "ice_thickness_Ii": {"I": 0.80, "II": 1.00, "III": 1.15, "IV": 1.25},
+    "ice_wind_Iw": {"I": 1.00, "II": 1.00, "III": 1.00, "IV": 1.00}
+  },
+  "ice": {
+    "height_factor": {"citation": "Eq. 10.4-4, p. 70", "z_ref_ft": 33.0, "exponent": 0.10, "max": 1.4},
+    "kzt_exponent": {"citation": "Eq. 10.4-5 / Sec. 10.4.5, pp. 70-71", "value": 0.35},
+    "density_pcf": {"citation": "Sec. 10.4.1, p. 70 (not less than 56 pcf)", "value": 56.0},
+    "cf_round_ice_covered": {"citation": "Sec. 10.5.1 -> Fig. 29.4-1 Round D*sqrt(qz) <= 2.5, h/D = 25, pp. 71, 325", "value": 1.2}
+  },
+  "seismic": {
+    "fp_equation": {"citation": "Eqs. 13.3-1 to 13.3-3, p. 123", "coefficient": 0.4, "upper": 1.6, "lower": 0.3},
+    "vertical": {"citation": "Sec. 13.3.1.2, p. 123", "coefficient": 0.2},
+    "piping_types": {
+      "citation": "Table 13.6-1 Distribution Systems, p. 129",
+      "b31_welded": {"label": "ASME B31 piping, welded or brazed joints", "ap": 2.5, "Rp": 12.0},
+      "b31_threaded": {"label": "ASME B31 piping, threaded/bonded/grooved or limited-deformability", "ap": 2.5, "Rp": 6.0},
+      "non_b31_welded": {"label": "Non-B31 piping, welded or brazed (high-deformability)", "ap": 2.5, "Rp": 9.0},
+      "non_b31_threaded": {"label": "Non-B31 piping, threaded/bonded/grooved", "ap": 2.5, "Rp": 4.5},
+      "low_deformability": {"label": "Low-deformability piping (cast iron, glass, nonductile plastics)", "ap": 2.5, "Rp": 3.0}
+    },
+    "asd_factor": {"citation": "Sec. 2.4.5 Comb. 8, p. 9", "value": 0.7},
+    "asd_factor_with_snow": {"citation": "Sec. 2.4.5 Comb. 9, p. 9", "value": 0.525}
+  },
+  "combinations": {
+    "citation": "Sec. 2.4.1, 2.4.3, 2.4.5, pp. 8-9",
+    "wind_snow_factor": 0.75,
+    "ice_factor": 0.7
+  }
+}

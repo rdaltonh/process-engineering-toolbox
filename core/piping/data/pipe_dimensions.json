@@ -1,0 +1,1193 @@
+{
+ "unit": "in",
+ "verified": false,
+ "verification_note": "OD and nominal wall transcribed from memory of ASME B36.10M (carbon/alloy) and B36.19M (stainless 'S' schedules). Must be spot-checked against the published standards before results are relied on.",
+ "citations": {
+  "B36.10M": "ASME B36.10M, Welded and Seamless Wrought Steel Pipe (edition to be confirmed)",
+  "B36.19M": "ASME B36.19M, Stainless Steel Pipe (edition to be confirmed)"
+ },
+ "sizes": [
+  {
+   "nps": "1/2",
+   "od": 0.84,
+   "schedules": {
+    "STD": {
+     "wall": 0.109,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.109,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.147,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.147,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.188,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.294,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.065,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.083,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.147,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "3/4",
+   "od": 1.05,
+   "schedules": {
+    "STD": {
+     "wall": 0.113,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.113,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.154,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.154,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.219,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.308,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.065,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.083,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.113,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.154,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "1",
+   "od": 1.315,
+   "schedules": {
+    "STD": {
+     "wall": 0.133,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.133,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.179,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.179,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.358,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.065,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.133,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.179,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "1-1/4",
+   "od": 1.66,
+   "schedules": {
+    "STD": {
+     "wall": 0.14,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.14,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.191,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.191,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.382,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.065,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.14,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.191,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "1-1/2",
+   "od": 1.9,
+   "schedules": {
+    "STD": {
+     "wall": 0.145,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.145,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.2,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.2,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.281,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.4,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.065,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.145,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.2,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "2",
+   "od": 2.375,
+   "schedules": {
+    "STD": {
+     "wall": 0.154,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.154,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.218,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.218,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.344,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.436,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.065,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.154,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.218,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "2-1/2",
+   "od": 2.875,
+   "schedules": {
+    "STD": {
+     "wall": 0.203,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.203,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.276,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.276,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.552,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.083,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.12,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.203,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.276,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "3",
+   "od": 3.5,
+   "schedules": {
+    "STD": {
+     "wall": 0.216,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.216,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.3,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.3,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.438,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.6,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.083,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.12,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.216,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.3,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "3-1/2",
+   "od": 4.0,
+   "schedules": {
+    "STD": {
+     "wall": 0.226,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.226,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.318,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.318,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.083,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.12,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.226,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.318,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "4",
+   "od": 4.5,
+   "schedules": {
+    "STD": {
+     "wall": 0.237,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.237,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.337,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.337,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 0.438,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.531,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.674,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.083,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.12,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.237,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.337,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "5",
+   "od": 5.563,
+   "schedules": {
+    "STD": {
+     "wall": 0.258,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.258,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.625,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.75,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.134,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.258,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "6",
+   "od": 6.625,
+   "schedules": {
+    "STD": {
+     "wall": 0.28,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.28,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.432,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.432,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 0.562,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.719,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.864,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.134,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.28,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.432,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "8",
+   "od": 8.625,
+   "schedules": {
+    "20": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.277,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.322,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.322,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.406,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 0.594,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 0.719,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 0.812,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 0.906,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 0.875,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.109,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.148,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.322,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "10",
+   "od": 10.75,
+   "schedules": {
+    "20": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.307,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.365,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.365,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.594,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 0.719,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 0.844,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.0,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 1.125,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 1.0,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.134,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.165,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.365,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "12",
+   "od": 12.75,
+   "schedules": {
+    "20": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.33,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.406,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.562,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.688,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 0.844,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.0,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.125,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 1.312,
+     "standard": "B36.10M"
+    },
+    "XXS": {
+     "wall": 1.0,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.156,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.18,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "14",
+   "od": 14.0,
+   "schedules": {
+    "10": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "20": {
+     "wall": 0.312,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.438,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.594,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.75,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 0.938,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.094,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.25,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 1.406,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.156,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.188,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "16",
+   "od": 16.0,
+   "schedules": {
+    "10": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "20": {
+     "wall": 0.312,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.656,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.844,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 1.031,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.219,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.438,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 1.594,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.165,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.188,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "18",
+   "od": 18.0,
+   "schedules": {
+    "10": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "20": {
+     "wall": 0.312,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.438,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.562,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.75,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 0.938,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 1.156,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.375,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.562,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 1.781,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.165,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.188,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "20",
+   "od": 20.0,
+   "schedules": {
+    "10": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "20": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.594,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.812,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 1.031,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 1.281,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.5,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.75,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 1.969,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.188,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.218,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "22",
+   "od": 22.0,
+   "schedules": {
+    "10": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "20": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.875,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 1.125,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 1.375,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.625,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 1.875,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 2.125,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.188,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.218,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  },
+  {
+   "nps": "24",
+   "od": 24.0,
+   "schedules": {
+    "10": {
+     "wall": 0.25,
+     "standard": "B36.10M"
+    },
+    "20": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "30": {
+     "wall": 0.562,
+     "standard": "B36.10M"
+    },
+    "STD": {
+     "wall": 0.375,
+     "standard": "B36.10M"
+    },
+    "40": {
+     "wall": 0.688,
+     "standard": "B36.10M"
+    },
+    "60": {
+     "wall": 0.969,
+     "standard": "B36.10M"
+    },
+    "XS": {
+     "wall": 0.5,
+     "standard": "B36.10M"
+    },
+    "80": {
+     "wall": 1.219,
+     "standard": "B36.10M"
+    },
+    "100": {
+     "wall": 1.531,
+     "standard": "B36.10M"
+    },
+    "120": {
+     "wall": 1.812,
+     "standard": "B36.10M"
+    },
+    "140": {
+     "wall": 2.062,
+     "standard": "B36.10M"
+    },
+    "160": {
+     "wall": 2.344,
+     "standard": "B36.10M"
+    },
+    "5S": {
+     "wall": 0.218,
+     "standard": "B36.19M"
+    },
+    "10S": {
+     "wall": 0.25,
+     "standard": "B36.19M"
+    },
+    "40S": {
+     "wall": 0.375,
+     "standard": "B36.19M"
+    },
+    "80S": {
+     "wall": 0.5,
+     "standard": "B36.19M"
+    }
+   }
+  }
+ ]
+}

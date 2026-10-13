@@ -1,0 +1,7 @@
+id = "span_chart"
+name = "Span Chart"
+category = "piping_structural"
+status = "available"
+version = "0.3.0"
+entry = "app.py"
+description = "Max support spacing per B31.3 sustained/occasional load cases with optional ASCE 7-16 wind, snow, ice, and seismic."

@@ -1,0 +1,8 @@
+[server]
+# Listen on all interfaces so devices on the home LAN can connect.
+# Inbound access is limited by the Windows Firewall rule (Private profile, LocalSubnet only).
+# Set back to "localhost" to make the app local-only again.
+address = "0.0.0.0"
+
+[browser]
+gatherUsageStats = false

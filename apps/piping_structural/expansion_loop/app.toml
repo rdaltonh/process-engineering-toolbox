@@ -1,0 +1,8 @@
+id = "expansion_loop"
+name = "Expansion Loop"
+category = "piping_structural"
+status = "planned"
+version = "0.0.0"
+entry = "app.py"
+description = "Guided-cantilever loop sizing, CTE integrated 293 K → 4 K, bellows-vs-loop decision."
+roadmap_note = "Phase 2"

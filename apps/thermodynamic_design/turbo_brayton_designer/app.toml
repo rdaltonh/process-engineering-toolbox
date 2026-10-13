@@ -1,0 +1,8 @@
+id = "turbo_brayton_designer"
+name = "Turbo-Brayton / Collins Cycle Designer"
+category = "thermodynamic_design"
+status = "planned"
+version = "0.0.0"
+entry = "app.py"
+description = "Gauss-Seidel cycle solver with arbitrary component sequencing. Python reimplementation of the RCA toolbox."
+roadmap_note = "Phase 2: reimplement from MATLAB source as reference"
