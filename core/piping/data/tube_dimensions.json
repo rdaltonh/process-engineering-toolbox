@@ -1,0 +1,281 @@
+{
+ "product": "tube",
+ "unit": "in",
+ "mill_tolerance": 0.1,
+ "mill_tolerance_basis": "ASTM A269 wall tolerance +/-10% (from memory; verify against your spec)",
+ "verified": false,
+ "verification_note": "Tube OD and wall are the ordered dimensions (exact by definition). The OD/wall availability matrix is from memory of common stainless tubing catalogs, and the 10% wall tolerance is from memory of ASTM A269. Verify both against your supplier/spec.",
+ "citations": {
+  "A269": "ASTM A269 seamless/welded austenitic stainless tubing; common commercial OD/wall combinations"
+ },
+ "sizes": [
+  {
+   "nps": "1/4",
+   "od": 0.25,
+   "schedules": {
+    "0.020": {
+     "wall": 0.02,
+     "standard": "A269"
+    },
+    "0.028": {
+     "wall": 0.028,
+     "standard": "A269"
+    },
+    "0.035": {
+     "wall": 0.035,
+     "standard": "A269"
+    },
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "3/8",
+   "od": 0.375,
+   "schedules": {
+    "0.020": {
+     "wall": 0.02,
+     "standard": "A269"
+    },
+    "0.028": {
+     "wall": 0.028,
+     "standard": "A269"
+    },
+    "0.035": {
+     "wall": 0.035,
+     "standard": "A269"
+    },
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "1/2",
+   "od": 0.5,
+   "schedules": {
+    "0.028": {
+     "wall": 0.028,
+     "standard": "A269"
+    },
+    "0.035": {
+     "wall": 0.035,
+     "standard": "A269"
+    },
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "5/8",
+   "od": 0.625,
+   "schedules": {
+    "0.035": {
+     "wall": 0.035,
+     "standard": "A269"
+    },
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "3/4",
+   "od": 0.75,
+   "schedules": {
+    "0.035": {
+     "wall": 0.035,
+     "standard": "A269"
+    },
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    },
+    "0.109": {
+     "wall": 0.109,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "7/8",
+   "od": 0.875,
+   "schedules": {
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    },
+    "0.109": {
+     "wall": 0.109,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "1",
+   "od": 1.0,
+   "schedules": {
+    "0.049": {
+     "wall": 0.049,
+     "standard": "A269"
+    },
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    },
+    "0.109": {
+     "wall": 0.109,
+     "standard": "A269"
+    },
+    "0.120": {
+     "wall": 0.12,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "1-1/4",
+   "od": 1.25,
+   "schedules": {
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    },
+    "0.109": {
+     "wall": 0.109,
+     "standard": "A269"
+    },
+    "0.120": {
+     "wall": 0.12,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "1-1/2",
+   "od": 1.5,
+   "schedules": {
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    },
+    "0.109": {
+     "wall": 0.109,
+     "standard": "A269"
+    },
+    "0.120": {
+     "wall": 0.12,
+     "standard": "A269"
+    }
+   }
+  },
+  {
+   "nps": "2",
+   "od": 2.0,
+   "schedules": {
+    "0.065": {
+     "wall": 0.065,
+     "standard": "A269"
+    },
+    "0.083": {
+     "wall": 0.083,
+     "standard": "A269"
+    },
+    "0.095": {
+     "wall": 0.095,
+     "standard": "A269"
+    },
+    "0.109": {
+     "wall": 0.109,
+     "standard": "A269"
+    },
+    "0.120": {
+     "wall": 0.12,
+     "standard": "A269"
+    }
+   }
+  }
+ ]
+}

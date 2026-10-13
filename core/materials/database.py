@@ -59,6 +59,8 @@ class Material:
     properties: dict[str, dict]
     service_notes: list[dict] = field(default_factory=list)
     occasional_notes: list[dict] = field(default_factory=list)
+    forms: list[str] = field(default_factory=lambda: ["pipe"])  # product forms available ("pipe", "tube")
+    tube_spec: str = ""
 
     def citations(self) -> list[dict]:
         out = []
@@ -102,12 +104,15 @@ class MaterialDatabase:
             properties=d["properties"],
             service_notes=d.get("service_notes", []),
             occasional_notes=d.get("occasional_notes", []),
+            forms=d.get("forms", ["pipe"]),
+            tube_spec=d.get("tube_spec", ""),
         )
         self._materials[mat.id] = mat
         return mat
 
-    def ids(self) -> list[str]:
-        return list(self._materials)
+    def ids(self, product: str | None = None) -> list[str]:
+        """Material ids, optionally only those available in a product form."""
+        return [k for k, m in self._materials.items() if product is None or product in m.forms]
 
     def material(self, material_id: str) -> Material:
         try:

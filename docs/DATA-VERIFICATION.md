@@ -82,3 +82,21 @@ These values were **transcribed directly from your licensed copy** (not from mem
 - [ ] Table 7.3-1 C_e, Table 7.3-2 C_t = 1.2 (p. 58) · Eq. 7.7-1 γ (p. 59) · §7.13.3 / Fig. 7.13-2 (p. 64)
 - [ ] Table 1.5-2 I_s, I_i (p. 5) · §10.4 ice (pp. 70–71)
 - [ ] Table 13.6-1 piping a_p / R_p (p. 129) · Eqs. 13.3-1 to 13.3-3, §13.3.1.2 (p. 123)
+
+## 6. Stainless tube: `core/piping/data/tube_dimensions.json`
+
+Tube OD and wall are the ordered dimensions, so they're exact by definition. Two things are from memory and need checking:
+- [ ] **OD/wall availability** (common commercial combinations):
+
+| OD | Walls offered (in) |
+|---|---|
+| 1/4, 3/8 | 0.020, 0.028, 0.035, 0.049, 0.065 |
+| 1/2 | 0.028, 0.035, 0.049, 0.065, 0.083 |
+| 5/8 | 0.035, 0.049, 0.065, 0.083, 0.095 |
+| 3/4 | 0.035 to 0.109 |
+| 7/8 | 0.049 to 0.109 |
+| 1 | 0.049 to 0.120 |
+| 1-1/4, 1-1/2, 2 | 0.065 to 0.120 |
+
+- [ ] **Wall tolerance 10%** (ASTM A269), applied when mill tolerance is on. Pipe stays at 12.5%.
+- [ ] **Sh for A269 tube** assumed equal to the A312 pipe value of the same grade (Table A-1)

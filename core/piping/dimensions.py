@@ -1,7 +1,11 @@
-"""Pipe dimensional data (ASME B36.10M / B36.19M) and section properties.
+"""Pipe and tube dimensional data and section properties.
 
-Only OD and nominal wall are stored (data/pipe_dimensions.json). Everything
-else is computed. All returned values are SI (metres).
+Pipe:  ASME B36.10M / B36.19M, NPS with schedules (data/pipe_dimensions.json).
+Tube:  stainless tubing by OD and wall, e.g. ASTM A269 (data/tube_dimensions.json).
+
+Only OD and nominal wall are stored; everything else is computed. All returned
+values are SI (metres). Every function takes ``product`` ("pipe" or "tube");
+the default "pipe" keeps the original pipe-only API unchanged.
 """
 
 from __future__ import annotations
@@ -15,14 +19,25 @@ from pathlib import Path
 from ..io import ProjectWarning
 from ..units import convert
 
-_DATA = Path(__file__).parent / "data" / "pipe_dimensions.json"
+_DATA_DIR = Path(__file__).parent / "data"
+_FILES = {"pipe": "pipe_dimensions.json", "tube": "tube_dimensions.json"}
+PRODUCTS = ("pipe", "tube")
 
 MILL_TOLERANCE = 0.125  # standard -12.5% wall under-tolerance for seamless pipe
+SIZE_LABEL = {"pipe": "NPS", "tube": "Tube OD"}
+WALL_LABEL = {"pipe": "Schedule", "tube": "Wall"}
 
 
-@lru_cache(maxsize=1)
-def _table() -> dict:
-    return json.loads(_DATA.read_text(encoding="utf-8"))
+@lru_cache(maxsize=2)
+def _table(product: str = "pipe") -> dict:
+    if product not in _FILES:
+        raise KeyError(f"Unknown product '{product}' (expected one of {PRODUCTS}).")
+    return json.loads((_DATA_DIR / _FILES[product]).read_text(encoding="utf-8"))
+
+
+def mill_tolerance(product: str = "pipe") -> float:
+    """Wall under-tolerance fraction applied when the mill-tolerance option is on."""
+    return _table(product).get("mill_tolerance", MILL_TOLERANCE)
 
 
 def _nps_value(nps: str) -> float:
@@ -36,22 +51,22 @@ def _nps_value(nps: str) -> float:
     return value
 
 
-def list_nps() -> list[str]:
-    return [s["nps"] for s in _table()["sizes"]]
+def list_nps(product: str = "pipe") -> list[str]:
+    return [s["nps"] for s in _table(product)["sizes"]]
 
 
 def nps_value(nps: str) -> float:
     return _nps_value(nps)
 
 
-# Conventional thin-to-thick display order.
+# Conventional thin-to-thick display order for pipe schedules.
 SCHEDULE_ORDER = ["5S", "10S", "10", "20", "30", "STD", "40", "40S", "60", "XS", "80", "80S",
                   "100", "120", "140", "160", "XXS"]
 
 
-def list_schedules() -> list[str]:
+def list_schedules(product: str = "pipe") -> list[str]:
     seen: list[str] = []
-    for s in _table()["sizes"]:
+    for s in _table(product)["sizes"]:
         for sch in s["schedules"]:
             if sch not in seen:
                 seen.append(sch)
@@ -59,26 +74,41 @@ def list_schedules() -> list[str]:
 
 
 def sort_schedules(schedules: list[str]) -> list[str]:
+    """Pipe schedules thin-to-thick; tube walls (numeric strings) ascending."""
     rank = {s: i for i, s in enumerate(SCHEDULE_ORDER)}
-    return sorted(schedules, key=lambda s: rank.get(s, len(rank)))
+
+    def key(s: str):
+        if s in rank:
+            return (0, rank[s])
+        try:
+            return (1, float(s))
+        except ValueError:
+            return (2, 0.0)
+
+    return sorted(schedules, key=key)
 
 
-def schedules_for(nps: str) -> list[str]:
-    return list(_size(nps)["schedules"])
+def wall_label(schedule: str, product: str = "pipe") -> str:
+    """Display label: 'Sch 40' for pipe, '0.035"' for tube."""
+    return f'{schedule}"' if product == "tube" else f"Sch {schedule}"
 
 
-def _size(nps: str) -> dict:
-    for s in _table()["sizes"]:
+def schedules_for(nps: str, product: str = "pipe") -> list[str]:
+    return list(_size(nps, product)["schedules"])
+
+
+def _size(nps: str, product: str = "pipe") -> dict:
+    for s in _table(product)["sizes"]:
         if s["nps"] == nps:
             return s
-    raise KeyError(f"NPS {nps} not in pipe dimension table.")
+    raise KeyError(f"{SIZE_LABEL[product]} {nps} not in {product} dimension table.")
 
 
-def data_warnings() -> list[ProjectWarning]:
-    t = _table()
+def data_warnings(product: str = "pipe") -> list[ProjectWarning]:
+    t = _table(product)
     if t.get("verified"):
         return []
-    return [ProjectWarning("UNVERIFIED_DATA", t["verification_note"], "piping:pipe_dimensions")]
+    return [ProjectWarning("UNVERIFIED_DATA", t["verification_note"], f"piping:{product}_dimensions")]
 
 
 @dataclass(frozen=True)
@@ -89,6 +119,7 @@ class PipeSection:
     od: float          # m
     wall_nominal: float  # m
     wall_used: float     # m, wall for stress/stiffness after allowances
+    product: str = "pipe"
 
     @property
     def id_nominal(self) -> float:
@@ -118,7 +149,7 @@ class PipeSection:
 
     @property
     def citation(self) -> str:
-        return _table()["citations"][self.standard]
+        return _table(self.product)["citations"][self.standard]
 
 
 def get_section(
@@ -126,22 +157,23 @@ def get_section(
     schedule: str,
     corrosion_allowance: float = 0.0,
     mill_tolerance: bool = False,
+    product: str = "pipe",
 ) -> PipeSection:
-    """Look up a pipe and compute the wall used for stress/stiffness.
+    """Look up a pipe or tube and compute the wall used for stress/stiffness.
 
-    wall_used = wall_nominal * (1 - 0.125 if mill_tolerance) - corrosion_allowance
+    wall_used = wall_nominal * (1 - tolerance if mill_tolerance) - corrosion_allowance,
+    with tolerance 12.5% for pipe and the tube table's value (10%) for tube.
     corrosion_allowance is in metres.
     """
-    size = _size(nps)
+    size = _size(nps, product)
     if schedule not in size["schedules"]:
-        raise KeyError(f"Schedule {schedule} not listed for NPS {nps}.")
+        raise KeyError(f"{wall_label(schedule, product)} not listed for {SIZE_LABEL[product]} {nps}.")
     entry = size["schedules"][schedule]
-    unit = _table()["unit"]
+    unit = _table(product)["unit"]
     od = convert(size["od"], unit, "m")
     wall = convert(entry["wall"], unit, "m")
-    used = wall * (1 - MILL_TOLERANCE if mill_tolerance else 1.0) - corrosion_allowance
+    tol = _table(product).get("mill_tolerance", MILL_TOLERANCE)
+    used = wall * (1 - tol if mill_tolerance else 1.0) - corrosion_allowance
     if used <= 0:
-        raise ValueError(
-            f"NPS {nps} Sch {schedule}: allowances exceed wall thickness."
-        )
-    return PipeSection(nps, schedule, entry["standard"], od, wall, used)
+        raise ValueError(f"{SIZE_LABEL[product]} {nps} {wall_label(schedule, product)}: allowances exceed wall thickness.")
+    return PipeSection(nps, schedule, entry["standard"], od, wall, used, product)

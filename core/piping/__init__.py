@@ -1,23 +1,33 @@
 from .dimensions import (
     MILL_TOLERANCE,
+    PRODUCTS,
+    SIZE_LABEL,
+    WALL_LABEL,
     PipeSection,
     data_warnings,
     get_section,
     list_nps,
     list_schedules,
+    mill_tolerance,
     nps_value,
     schedules_for,
     sort_schedules,
+    wall_label,
 )
 
 __all__ = [
     "MILL_TOLERANCE",
+    "PRODUCTS",
+    "SIZE_LABEL",
+    "WALL_LABEL",
     "PipeSection",
     "data_warnings",
     "get_section",
     "list_nps",
     "list_schedules",
+    "mill_tolerance",
     "nps_value",
     "schedules_for",
     "sort_schedules",
+    "wall_label",
 ]

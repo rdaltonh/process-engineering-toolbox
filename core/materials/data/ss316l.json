@@ -3,6 +3,11 @@
  "name": "Stainless steel 316L",
  "spec": "ASME SA-312 TP316L",
  "group": "B31.3 App. C: Austenitic stainless steels",
+ "forms": [
+  "pipe",
+  "tube"
+ ],
+ "tube_spec": "ASME SA-269 TP316L",
  "properties": {
   "E": {
    "kind": "tabular",
@@ -95,7 +100,7 @@
      16.7
     ]
    ],
-   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F)",
+   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F; A269 tube of the same grade assumed to share the A312 value)",
    "verified": false,
    "verification_note": "transcribed from memory of ASME B31.3 Table A-1 (Table A-1); UNVERIFIED. Check against your licensed edition and set verified=true."
   }

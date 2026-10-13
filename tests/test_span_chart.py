@@ -281,3 +281,47 @@ def test_generate_tables_pivot_and_pdf():
     assert t.cells[SIMPLY_SUPPORTED]["4"]["40"][0] == pytest.approx(single.sizes[0].by_condition[0].span)
     pdf = build_pdf(t, inp, "US", "test")
     assert pdf[:5] == b"%PDF-" and len(pdf) > 2000
+
+
+# ---------------------------------------------------------------- tube
+
+def test_tube_section_and_tolerance():
+    from proctoolbox_core.piping import get_section, list_nps, list_schedules, schedules_for
+    assert list_nps("tube")[0] == "1/4" and list_nps("tube")[-1] == "2"
+    assert list_schedules("tube")[-1] == "0.120"
+    assert "0.120" not in schedules_for("1/4", "tube")
+    s = get_section("1/2", "0.049", product="tube")
+    assert s.od / IN == pytest.approx(0.5) and s.wall_nominal / IN == pytest.approx(0.049)
+    assert s.id_nominal / IN == pytest.approx(0.402)
+    s = get_section("1/2", "0.049", mill_tolerance=True, product="tube")
+    assert s.wall_used / IN == pytest.approx(0.049 * 0.90)  # A269 10%
+
+
+def test_tube_span_matches_hand_calc():
+    inp = _inputs(material_id="ss316l", product="tube", schedule="0.065", nps_list=["1"],
+                  deflection_limit=0.1 * IN)
+    r = SpanCalculator(inp).run()
+    res = r.sizes[0].by_condition[0]
+    od, t = 1.0, 0.065
+    di = od - 2 * t
+    I = math.pi / 64 * (od**4 - di**4)
+    w = 0.290 * math.pi / 4 * (od**2 - di**2) + (62.37 / 1728) * math.pi / 4 * di**2
+    L_d = (0.1 * 28.3e6 * I / (5 / 384 * w)) ** 0.25 / 12
+    assert _span(res, DEFLECTION) / 0.3048 == pytest.approx(L_d, rel=1e-3)
+    assert r.allowable / PSI == pytest.approx(16700, rel=1e-6)
+
+
+def test_tube_rejects_non_stainless():
+    with pytest.raises(SpanInputError, match="not available as tube"):
+        SpanCalculator(_inputs(material_id="carbon_steel", product="tube", schedule="0.065", nps_list=["1"])).run()
+
+
+def test_tube_tables_and_roundtrip():
+    from span_report import build_pdf, generate_tables
+    inp = _inputs(material_id="ss304", product="tube", schedule="0.035", nps_list=["1/4"], deflection_limit=0.1 * IN)
+    t = generate_tables(inp, ["0.120", "0.035"], ["1/4", "1/2", "1"])
+    assert t.schedules == ["0.035", "0.120"] and t.product == "tube"
+    assert t.cells[SIMPLY_SUPPORTED]["1/4"]["0.120"] is None
+    assert build_pdf(t, inp, "US", "test")[:5] == b"%PDF-"
+    q = loads(dumps(Project(app_name="span_chart", app_version="x", inputs={"span": inp.to_project_inputs()})))
+    assert SpanInputs.from_project_inputs(q.inputs["span"]) == inp

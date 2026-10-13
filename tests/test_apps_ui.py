@@ -70,3 +70,15 @@ def test_generate_tables_pdf():
     assert pdf[:5] == b"%PDF-"
     t = at.session_state["_tbl_preview"]
     assert t.schedules == ["40", "80"] and "22" in t.nps  # Sch 80 lists 22"
+
+
+def test_tube_mode_ui():
+    at = AppTest.from_file(str(SPAN_APP), default_timeout=60).run()
+    at.number_input(key="sc_defl").set_value(0.1)
+    at.radio(key="sc_product").set_value("tube")
+    at.run()
+    assert not at.exception
+    assert not any("Cannot compute" in w.value for w in at.warning)
+    assert at.selectbox(key="sc_material").value in ("ss304", "ss304_304l", "ss304l", "ss316", "ss316_316l", "ss316l")
+    df = _results_df(at, "Tube OD")
+    assert list(df["Tube OD"].unique())[:2] == ["1/4", "3/8"]

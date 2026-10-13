@@ -38,6 +38,12 @@ W_sus is the SUS vertical load. Items marked * are added only when that load is 
 
 **Note on the 1.33 factor:** ASCE 7 §2.4.1 bars allowable-stress increases unless they are justified by rate or duration of load. B31.3 ¶302.3.6's 1.33 Sh for occasional loads is that kind of material-code, duration-based provision. Combining ASCE ASD loads with B31.3's 1.33 is common practice, and the app cites both.
 
+## 0b. Tube option (Dalton, 2026-10-13)
+- A Pipe/Tube toggle. Tube is stainless only (304, 304L, 316, 316L, and the dual-cert grades), ASTM A269.
+- ODs: 1/4, 3/8, 1/2, 5/8, 3/4, 7/8, 1, 1-1/4, 1-1/2, 2. Walls: common commercial combinations up to 0.120 in.
+- Tube wall tolerance is 10% (A269) when mill tolerance is on.
+- All load cases and outputs are the same as for pipe.
+
 ## 1. Changes from v1
 
 | Change | Detail |

@@ -18,7 +18,7 @@ import streamlit as st
 from proctoolbox_core.io import Project
 from proctoolbox_core.loads import asce7_16 as asce
 from proctoolbox_core.materials import MaterialDataError, default_database
-from proctoolbox_core.piping import list_nps, list_schedules
+from proctoolbox_core.piping import SIZE_LABEL, WALL_LABEL, list_nps, list_schedules, mill_tolerance, wall_label
 from proctoolbox_core.ui import load_app_meta, page_header, save_load_panel, unit_system_toggle, warning_badge
 from proctoolbox_core.units import UNIT_SYSTEMS, display_unit, from_si, to_si
 
@@ -45,7 +45,7 @@ DB = default_database()
 # Unit-bearing values live in session state in the current display system.
 FIELDS: dict[str, tuple[str, str | None, object]] = {
     "sc_material": ("material_id", None, "carbon_steel"),
-    "sc_schedule": ("schedule", None, "40"),
+    "sc_product": ("product", None, "pipe"),
     "sc_T": ("design_temperature", "temperature", 70.0),
     "sc_P": ("design_pressure", "pressure", 0.0),
     "sc_sg": ("contents_sg", None, 1.0),
@@ -91,9 +91,17 @@ UI_DEFAULTS = {
     "unit_system": "US",
     "_unit_system_prev": "US",
     "sc_mode": "Size sweep",
+    "sc_schedule": "40",
     "sc_nps": "2",
     "sc_nps_from": "1/2",
     "sc_nps_to": "24",
+    "sc_twall": "0.035",
+    "sc_tnps": "1/2",
+    "sc_tnps_from": "1/4",
+    "sc_tnps_to": "2",
+    "tbl_twalls": ["0.035", "0.049", "0.065"],
+    "tbl_tfrom": "1/4",
+    "tbl_tto": "2",
     "sc_override_on": False,
     "tbl_scheds": ["40", "80"],
     "tbl_from": "1/2",
@@ -103,6 +111,20 @@ for k, v in UI_DEFAULTS.items():
     st.session_state.setdefault(k, v)
 for k, (_, _, v) in FIELDS.items():
     st.session_state.setdefault(k, list(v) if isinstance(v, list) else v)
+
+
+KEYS = {
+    "pipe": {"sched": "sc_schedule", "size": "sc_nps", "from": "sc_nps_from", "to": "sc_nps_to"},
+    "tube": {"sched": "sc_twall", "size": "sc_tnps", "from": "sc_tnps_from", "to": "sc_tnps_to"},
+}
+TABLE_KEYS = {
+    "pipe": {"walls": "tbl_scheds", "from": "tbl_from", "to": "tbl_to"},
+    "tube": {"walls": "tbl_twalls", "from": "tbl_tfrom", "to": "tbl_tto"},
+}
+
+
+def _product() -> str:
+    return st.session_state.get("sc_product") or "pipe"
 
 
 def _units() -> str:
@@ -128,10 +150,11 @@ def _on_unit_change() -> None:
 
 
 def _sweep_nps() -> list[str]:
-    all_nps = list_nps()
+    k = KEYS[_product()]
+    all_nps = list_nps(_product())
     if st.session_state["sc_mode"] == "Single size":
-        return [st.session_state["sc_nps"]]
-    i, j = all_nps.index(st.session_state["sc_nps_from"]), all_nps.index(st.session_state["sc_nps_to"])
+        return [st.session_state[k["size"]]]
+    i, j = all_nps.index(st.session_state[k["from"]]), all_nps.index(st.session_state[k["to"]])
     return all_nps[min(i, j): max(i, j) + 1]
 
 
@@ -160,6 +183,7 @@ def build_inputs() -> SpanInputs:
         if isinstance(val, list):
             val = list(val)
         _set(inp, path, val)
+    inp.schedule = s[KEYS[inp.product]["sched"]]
     if not s["sc_override_on"]:
         inp.allowable_override = None
     if inp.corrosion_allowance is None:
@@ -177,11 +201,13 @@ def apply_inputs(inp: SpanInputs, ui_state: dict) -> None:
             val = round(from_si(val, kind, sys_), 6)
         s[key] = val
     s["sc_override_on"] = inp.allowable_override is not None
+    k = KEYS[inp.product]
+    s[k["sched"]] = inp.schedule
     s["sc_mode"] = ui_state.get("mode", "Size sweep")
     if s["sc_mode"] == "Single size":
-        s["sc_nps"] = inp.nps_list[0]
+        s[k["size"]] = inp.nps_list[0]
     else:
-        s["sc_nps_from"], s["sc_nps_to"] = inp.nps_list[0], inp.nps_list[-1]
+        s[k["from"]], s[k["to"]] = inp.nps_list[0], inp.nps_list[-1]
 
 
 # ---------------------------------------------------------------- layout
@@ -197,17 +223,27 @@ with left:
     inputs_box = st.container(height=700, border=False)
 with inputs_box:
     with st.container(border=True):
-        st.markdown("**Pipe**")
-        st.selectbox("Material", DB.ids(), key="sc_material", format_func=lambda m: DB.material(m).name)
+        st.markdown("**Pipe / tube**")
+        st.radio("Product", ["pipe", "tube"], key="sc_product", format_func=str.title, horizontal=True,
+                 help="Pipe: NPS × schedule (B36.10M/B36.19M). Tube: OD × wall (stainless, ASTM A269).")
+        prod = _product()
+        k = KEYS[prod]
+        mats = DB.ids(prod)
+        if st.session_state["sc_material"] not in mats:
+            st.session_state["sc_material"] = mats[0]
+        st.selectbox("Material", mats, key="sc_material",
+                     format_func=lambda m: DB.material(m).name,
+                     help="Tube is offered in stainless grades only." if prod == "tube" else None)
         c1, c2 = st.columns(2)
-        c1.selectbox("Schedule", list_schedules(), key="sc_schedule")
+        c1.selectbox(WALL_LABEL[prod], list_schedules(prod), key=k["sched"],
+                     format_func=lambda w: wall_label(w, prod) if prod == "tube" else w)
         c2.radio("Mode", ["Size sweep", "Single size"], key="sc_mode", horizontal=True)
         if st.session_state["sc_mode"] == "Single size":
-            st.selectbox("NPS", list_nps(), key="sc_nps")
+            st.selectbox(SIZE_LABEL[prod], list_nps(prod), key=k["size"])
         else:
             c1, c2 = st.columns(2)
-            c1.selectbox("From NPS", list_nps(), key="sc_nps_from")
-            c2.selectbox("To NPS", list_nps(), key="sc_nps_to")
+            c1.selectbox(f"From {SIZE_LABEL[prod]}", list_nps(prod), key=k["from"])
+            c2.selectbox(f"To {SIZE_LABEL[prod]}", list_nps(prod), key=k["to"])
 
     with st.container(border=True):
         st.markdown("**Design condition & allowables (B31.3)**")
@@ -235,7 +271,8 @@ with inputs_box:
         c1.number_input(f"Corrosion allowance ({u('small_length')})", key="sc_ca", min_value=0.0,
                         step=0.01 if _units() == "US" else 0.5, format="%.3f")
         c2.number_input("Spans (continuous)", key="sc_nspans", min_value=2, max_value=10, step=1)
-        st.checkbox("Apply 12.5% mill under-tolerance (Z, I, pressure stress)", key="sc_mill")
+        st.checkbox(f"Apply {mill_tolerance(_product()):.1%} mill under-tolerance (Z, I, pressure stress)", key="sc_mill",
+                    help="12.5% for pipe (A312/A106); 10% for tube (A269).")
 
     with st.container(border=True):
         st.markdown("**Environmental loads (ASCE 7-16)**")
@@ -340,6 +377,7 @@ def on_load(project: Project) -> None:
 
 sys_ = _units()
 L_u, d_u, s_u, w_u = u("length"), u("deflection"), u("stress"), u("line_weight")
+SZ = SIZE_LABEL[inputs.product]
 _theme = getattr(getattr(st, "context", None), "theme", None)
 DARK = getattr(_theme, "type", "dark") != "light"
 # Reference categorical palette (dataviz skill), fixed per governing case so color follows the case.
@@ -377,7 +415,7 @@ def span_chart(results: SpanResults) -> go.Figure:
                 others = " · ".join(f"{cs.case} {from_si(cs.span, 'length', sys_):.1f}" for cs in ec.cases)
                 xs.append(sz.nps)
                 ys.append(from_si(ec.span, "length", sys_))
-                hover.append(f"<b>NPS {sz.nps} · {END_CONDITIONS[ec.end_condition]}</b><br>"
+                hover.append(f"<b>{SZ} {sz.nps} · {END_CONDITIONS[ec.end_condition]}</b><br>"
                              f"Span {ys[-1]:.2f} {L_u}: {CASE_LABELS[case]} governs<br>"
                              f"<span style='font-size:11px'>All cases ({L_u}): {others}</span>")
         if xs:
@@ -387,7 +425,8 @@ def span_chart(results: SpanResults) -> go.Figure:
                             line=dict(color=SURFACE, width=2)),
                 legendgroup="case", legendgrouptitle_text="Governing case"))
     fig.update_layout(
-        xaxis=dict(title="NPS", type="category", categoryorder="array", categoryarray=list_nps(), showgrid=False),
+        xaxis=dict(title=SZ + (" (in)" if inputs.product == "tube" else ""), type="category", categoryorder="array",
+                   categoryarray=[sz.nps for sz in results.sizes], showgrid=False),
         yaxis=dict(title=f"Max support span ({L_u})", rangemode="tozero", gridwidth=1),
         height=380, margin=dict(t=10, r=95, b=30, l=50), hovermode="closest",
         legend=dict(orientation="h", y=-0.22, groupclick="toggleitem"),
@@ -405,10 +444,11 @@ with right:
         st.caption(f"Sh {from_si(results.allowable, 'stress', sys_):,.0f} {s_u} · occasional 1.33 Sh = "
                    f"{from_si(1.33 * results.allowable, 'stress', sys_):,.0f} {s_u} · "
                    f"E {from_si(results.E, 'modulus', sys_):.2f} {u('modulus')}"
-                   + (f" · Sch {inputs.schedule} not listed for NPS {', '.join(results.skipped)}" if results.skipped else ""))
+                   + (f" · {wall_label(inputs.schedule, inputs.product)} not listed for {SZ} {', '.join(results.skipped)}"
+                      if results.skipped else ""))
         if len(results.sizes) == 1:
             sz = results.sizes[0]
-            st.markdown(f"#### NPS {sz.nps} Sch {sz.schedule}")
+            st.markdown(f"#### {SZ} {sz.nps} × {wall_label(sz.schedule, inputs.product)}")
             cols = st.columns(len(sz.by_condition))
             for col, c in zip(cols, sz.by_condition):
                 col.metric(END_CONDITIONS[c.end_condition], f"{from_si(c.span, 'length', sys_):.2f} {L_u}",
@@ -420,12 +460,12 @@ with right:
         for sz in results.sizes:
             for c in sz.by_condition:
                 summary.append({
-                    "NPS": sz.nps, "End condition": END_CONDITIONS[c.end_condition],
+                    SZ: sz.nps, "End condition": END_CONDITIONS[c.end_condition],
                     f"Span ({L_u})": from_si(c.span, "length", sys_), "Governing case": CASE_LABELS[c.governs],
                     f"δ pipe+contents ({d_u})": from_si(c.deflection_pipe_contents, "deflection", sys_),
                     f"δ sustained total ({d_u})": from_si(c.deflection_sustained, "deflection", sys_),
                 })
-                row = {"NPS": sz.nps, "End condition": END_CONDITIONS[c.end_condition],
+                row = {SZ: sz.nps, "End condition": END_CONDITIONS[c.end_condition],
                        f"Span ({L_u})": from_si(c.span, "length", sys_), "Governs": c.governs}
                 for cs in c.cases:
                     row[f"{cs.case} span ({L_u})"] = from_si(cs.span, "length", sys_)
@@ -455,13 +495,13 @@ with right:
         with tab_detail:
             if by_nps:
                 if len(by_nps) > 1:
-                    pick = st.selectbox("NPS (also drives the worked values in each load's code-table panel)",
+                    pick = st.selectbox(f"{SZ} (also drives the worked values in each load's code-table panel)",
                                         list(by_nps), index=list(by_nps).index("4") if "4" in by_nps else 0,
                                         key="sc_detail_nps")
                 else:
                     pick = next(iter(by_nps))
                 detail = by_nps[pick]
-                st.caption(f"NPS {detail.nps} Sch {detail.schedule}")
+                st.caption(f"{SZ} {detail.nps} × {wall_label(detail.schedule, inputs.product)}")
                 span_refs.pipe_properties(detail, sys_)
         with tab_basis:
             if results.sizes:
@@ -482,16 +522,19 @@ with right:
 
 st.divider()
 with st.container(border=True):
-    st.markdown("**Generate span tables (PDF)**: one table per end condition, NPS rows × schedule columns, "
-                "using all inputs above")
+    st.markdown(f"**Generate span tables (PDF)**: one table per end condition, {SZ} rows × "
+                f"{WALL_LABEL[inputs.product].lower()} columns, using all inputs above")
+    gk = TABLE_KEYS[inputs.product]
     c0, c1, c2, c3 = st.columns([6, 1.3, 1.3, 1.6], vertical_alignment="bottom")
-    c0.pills("Schedules", list_schedules(), key="tbl_scheds", selection_mode="multi")
-    c1.selectbox("From NPS", list_nps(), key="tbl_from")
-    c2.selectbox("To NPS", list_nps(), key="tbl_to")
+    c0.pills(WALL_LABEL[inputs.product] + "s", list_schedules(inputs.product), key=gk["walls"], selection_mode="multi",
+             format_func=(lambda w: wall_label(w, "tube")) if inputs.product == "tube" else None)
+    c1.selectbox(f"From {SZ}", list_nps(inputs.product), key=gk["from"])
+    c2.selectbox(f"To {SZ}", list_nps(inputs.product), key=gk["to"])
     if c3.button("Generate Tables", type="primary", width="stretch"):
         try:
-            tables = generate_tables(inputs, list(st.session_state["tbl_scheds"] or []),
-                                     default_nps_range(st.session_state["tbl_from"], st.session_state["tbl_to"]), DB)
+            tables = generate_tables(inputs, list(st.session_state[gk["walls"]] or []),
+                                     default_nps_range(st.session_state[gk["from"]], st.session_state[gk["to"]],
+                                                       inputs.product), DB)
             stamp = datetime.now().astimezone()
             st.session_state["_tbl_pdf"] = build_pdf(tables, inputs, sys_, META["version"], stamp, DB)
             st.session_state["_tbl_name"] = f"span_tables_{stamp:%Y%m%d_%H%M%S}.pdf"
@@ -507,7 +550,7 @@ with st.container(border=True):
         t = st.session_state["_tbl_preview"]
         cond = t.end_conditions[0]
         prev = pd.DataFrame(
-            {f"Sch {sc}": [("-" if t.cells[cond][n][sc] is None else
+            {wall_label(sc, t.product): [("-" if t.cells[cond][n][sc] is None else
                             f"{from_si(t.cells[cond][n][sc][0], 'length', sys_):.1f} {t.cells[cond][n][sc][1]}")
                            for n in t.nps] for sc in t.schedules}, index=t.nps)
         with st.expander(f"Preview: {END_CONDITIONS[cond]}, span ({L_u}) and governing case"):

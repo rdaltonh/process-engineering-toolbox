@@ -16,7 +16,7 @@ from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Space
 from proctoolbox_core.io import ProjectWarning
 from proctoolbox_core.loads import asce7_16 as asce
 from proctoolbox_core.materials import MaterialDatabase, default_database
-from proctoolbox_core.piping import list_nps, schedules_for, sort_schedules
+from proctoolbox_core.piping import SIZE_LABEL, list_nps, mill_tolerance, schedules_for, sort_schedules, wall_label
 from proctoolbox_core.units import display_unit, from_si
 
 from span_calc import (
@@ -40,6 +40,7 @@ CASE_CODES = {SUS: "S", DEFLECTION: "D", OCC_WIND: "W", OCC_WIND_SNOW: "WS", OCC
 
 @dataclass
 class SpanTables:
+    product: str
     schedules: list[str]
     nps: list[str]
     end_conditions: list[str]
@@ -66,7 +67,7 @@ def generate_tables(base: SpanInputs, schedules: list[str], nps_list: list[str],
     for sch in schedules:
         inp = copy.deepcopy(base)
         inp.schedule = sch
-        inp.nps_list = [n for n in nps_list if sch in schedules_for(n)]
+        inp.nps_list = [n for n in nps_list if sch in schedules_for(n, base.product)]
         if not inp.nps_list:
             continue
         res = SpanCalculator(inp, db).run()
@@ -79,7 +80,7 @@ def generate_tables(base: SpanInputs, schedules: list[str], nps_list: list[str],
             for ec in sz.by_condition:
                 cells[ec.end_condition][sz.nps][sch] = (ec.span, ec.governs)
     used_nps = [n for n in nps_list if any(cells[c][n][s] for c in cells for s in schedules)]
-    return SpanTables(schedules, used_nps, list(base.end_conditions), cells, allowable, cite, E, warnings)
+    return SpanTables(base.product, schedules, used_nps, list(base.end_conditions), cells, allowable, cite, E, warnings)
 
 
 def input_summary(inp: SpanInputs, system: str, db: MaterialDatabase | None = None) -> list[tuple[str, str]]:
@@ -89,8 +90,11 @@ def input_summary(inp: SpanInputs, system: str, db: MaterialDatabase | None = No
     def fmt(val, kind, nd=2):
         return f"{from_si(val, kind, system):,.{nd}f} {display_unit(kind, system)}"
 
+    mat = db.material(inp.material_id)
+    spec = mat.tube_spec if inp.product == "tube" and mat.tube_spec else mat.spec
     rows = [
-        ("Material", f"{db.material(inp.material_id).name} ({db.material(inp.material_id).spec})"),
+        ("Product", "Tube (OD × wall)" if inp.product == "tube" else "Pipe (NPS × schedule)"),
+        ("Material", f"{mat.name} ({spec})"),
         ("Design temperature", fmt(inp.design_temperature, "temperature", 1)),
         ("Design pressure (gauge)", fmt(inp.design_pressure, "pressure", 1)),
         ("Contents specific gravity", f"{inp.contents_sg:g} (water at 60°F = 1.0)"),
@@ -99,7 +103,7 @@ def input_summary(inp: SpanInputs, system: str, db: MaterialDatabase | None = No
         ("Deflection limit", f"{fmt(inp.deflection_limit, 'deflection', 3)} on pipe + contents "
                              f"({inp.deflection_limit_basis or 'no basis given'})"),
         ("Corrosion allowance / mill tol.", f"{fmt(inp.corrosion_allowance, 'small_length', 3)} / "
-                                            f"{'12.5% applied' if inp.mill_tolerance else 'not applied'}"),
+                                            + (f"{mill_tolerance(inp.product):.1%} applied" if inp.mill_tolerance else "not applied")),
         ("End conditions", ", ".join(END_CONDITIONS[c] for c in inp.end_conditions)
          + (f" (continuous: {inp.continuous_spans} spans)" if "continuous" in inp.end_conditions else "")),
     ]
@@ -166,15 +170,16 @@ def build_pdf(tables: SpanTables, inp: SpanInputs, system: str, app_version: str
     present = sorted({cell[1] for c in tables.cells.values() for n in c.values() for cell in n.values() if cell},
                      key=list(CASE_CODES).index)
     legend = " · ".join(f"<b>{CASE_CODES[k]}</b> = {CASE_LABELS[k]}" for k in present)
-    note = (f"Cells: maximum span in {L_u} and the governing case code. '-' = schedule not listed for that NPS. "
+    note = (f"Cells: maximum span in {L_u} and the governing case code. '-' = "
+            f"{'wall not commonly available for that OD' if tables.product == 'tube' else 'schedule not listed for that NPS'}. "
             f"Governing case: {legend}.")
 
     ncols = len(tables.schedules)
-    nps_w = 0.5 * inch
+    nps_w = (0.6 if tables.product == "tube" else 0.5) * inch
     fs = 7.5 if ncols <= 9 else 6.0  # keep up to all 17 schedules on a 7.5 in portrait width
     col_w = min(0.85 * inch, (7.5 * inch - nps_w) / max(ncols, 1))
     for cond in tables.end_conditions:
-        data = [["NPS"] + [f"Sch {s}" for s in tables.schedules]]
+        data = [[SIZE_LABEL[tables.product]] + [wall_label(s, tables.product) for s in tables.schedules]]
         for n in tables.nps:
             row = [n]
             for s in tables.schedules:
@@ -216,8 +221,8 @@ def build_pdf(tables: SpanTables, inp: SpanInputs, system: str, app_version: str
     return buf.getvalue()
 
 
-def default_nps_range(lo: str, hi: str) -> list[str]:
-    all_nps = list_nps()
+def default_nps_range(lo: str, hi: str, product: str = "pipe") -> list[str]:
+    all_nps = list_nps(product)
     i, j = all_nps.index(lo), all_nps.index(hi)
     return all_nps[min(i, j): max(i, j) + 1]
 

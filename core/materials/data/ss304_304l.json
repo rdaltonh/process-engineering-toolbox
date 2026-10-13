@@ -3,6 +3,11 @@
  "name": "Stainless steel 304/304L dual certified",
  "spec": "ASME SA-312 TP304/304L (dual certified)",
  "group": "B31.3 App. C: Austenitic stainless steels",
+ "forms": [
+  "pipe",
+  "tube"
+ ],
+ "tube_spec": "ASME SA-269 TP304/304L (dual certified)",
  "properties": {
   "E": {
    "kind": "tabular",
@@ -95,7 +100,7 @@
      20.0
     ]
    ],
-   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F); dual certification uses the straight-grade value (verify basis in your edition)",
+   "citation": "ASME B31.3 Table A-1 (Basic Allowable Stress S, ksi; 'min temp to 100°F' value applied from -40°F; A269 tube of the same grade assumed to share the A312 value); dual certification uses the straight-grade value (verify basis in your edition)",
    "verified": false,
    "verification_note": "transcribed from memory of ASME B31.3 Table A-1 (Table A-1); UNVERIFIED. Check against your licensed edition and set verified=true."
   }

@@ -1,6 +1,6 @@
 # Span Chart
 
-**Status:** v0.4.0, available. Specs: `docs/app-specs/span-chart.md` (v1 base) and `docs/app-specs/span-chart-v2-load-cases.md` (load cases, governing).
+**Status:** v0.5.0, available. Specs: `docs/app-specs/span-chart.md` (v1 base) and `docs/app-specs/span-chart-v2-load-cases.md` (load cases, governing).
 
 ## Purpose
 Maximum support spacing for straight horizontal pipe, swept across NPS ½–24 or for a single size.
@@ -26,6 +26,11 @@ Maximum support spacing for straight horizontal pipe, swept across NPS ½–24 o
   - Sh: B31.3 Table A-1 (override available)
   - E: B31.3 App. C. Sh and E are from memory and **unverified**.
   - ASCE 7-16: transcribed from the licensed copy, with page cites.
+
+## Pipe or tube
+- **Pipe:** NPS ½–24 by schedule (B36.10M/B36.19M), 12.5% mill tolerance.
+- **Tube:** stainless OD 1/4"–2" by wall up to 0.120" (common commercial OD/wall combinations, ASTM A269), 10% wall tolerance.
+- Tube offers stainless grades only. Each product keeps its own size and wall selections, and the PDF tables use OD × wall columns.
 
 ## Layout
 - Inputs sit in a scrollable left column, and results stay visible on the right.

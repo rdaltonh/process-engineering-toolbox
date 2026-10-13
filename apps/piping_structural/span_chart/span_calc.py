@@ -18,7 +18,7 @@ import numpy as np
 from proctoolbox_core.io import ProjectWarning
 from proctoolbox_core.loads import asce7_16 as asce
 from proctoolbox_core.materials import MaterialDatabase, default_database
-from proctoolbox_core.piping import PipeSection, data_warnings, get_section, schedules_for
+from proctoolbox_core.piping import PRODUCTS, PipeSection, data_warnings, get_section, schedules_for
 from proctoolbox_core.units import Q_, convert, ureg
 
 G = 9.80665  # m/s^2
@@ -225,6 +225,7 @@ class SpanInputs:
     mill_tolerance: bool = True
     end_conditions: list[str] = field(default_factory=lambda: [SIMPLY_SUPPORTED])
     continuous_spans: int = 3
+    product: str = "pipe"                   # "pipe" (NPS/schedule) or "tube" (OD/wall)
     site: SiteInputs = field(default_factory=SiteInputs)
     wind: WindInputs = field(default_factory=WindInputs)
     snow: SnowInputs = field(default_factory=SnowInputs)
@@ -379,7 +380,11 @@ class SpanCalculator:
         if not i.end_conditions:
             problems.append("Select at least one end condition.")
         if not i.nps_list:
-            problems.append("Select at least one pipe size.")
+            problems.append("Select at least one size.")
+        if i.product not in PRODUCTS:
+            problems.append(f"Unknown product '{i.product}'.")
+        elif i.product not in self.db.material(i.material_id).forms:
+            problems.append(f"{self.db.material(i.material_id).name} is not available as {i.product} in this tool.")
         if i.continuous_spans < 2:
             problems.append("Continuous beam needs at least 2 spans.")
         if i.seismic.enabled and (i.seismic.structure_height <= 0 or i.seismic.sds < 0):
@@ -412,7 +417,7 @@ class SpanCalculator:
             warnings += list(sh_res.warnings)
             Sh, sh_cite = sh_res.value, sh_res.citation
         warnings += self.db.service_warnings(i.material_id, T)
-        warnings += data_warnings()
+        warnings += data_warnings(i.product)
         if not i.deflection_limit_basis.strip():
             warnings.append(ProjectWarning("UNCITED_INPUT", "Deflection limit entered without a basis.", "span_chart:inputs"))
         occasional_on = (i.wind.enabled or i.seismic.enabled or i.ice.enabled
@@ -440,10 +445,10 @@ class SpanCalculator:
         skipped: list[str] = []
         details: dict = {}
         for nps in i.nps_list:
-            if i.schedule not in schedules_for(nps):
+            if i.schedule not in schedules_for(nps, i.product):
                 skipped.append(nps)
                 continue
-            sec = get_section(nps, i.schedule, i.corrosion_allowance, i.mill_tolerance)
+            sec = get_section(nps, i.schedule, i.corrosion_allowance, i.mill_tolerance, i.product)
             sizes.append(self._size(sec, E, Sh, rho_metal, rho_contents, details, warnings))
         if any(s.pressure_exceeds for s in sizes):
             warnings.append(ProjectWarning(
