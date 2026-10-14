@@ -1,0 +1,36 @@
+{
+  "lsu": {
+    "citation": "J. R. Langley, K. L. Riley (C. A. Whitehurst, B. S. Pressburg, PIs), 'Flow Losses in Flexible Hose, Vol. I, Final Report', Louisiana State Univ., Contract NAS 9-4630, Sept 1966, NASA-CR-62061 (NTRS 19680012628). Eq. 29-35 (straight), Eq. 32 (curved).",
+    "verified": false,
+    "friction_factor": "Fanning, f_F = alpha * Re^beta, D = minimum inside diameter",
+    "alpha": {
+      "liquid": {"annular": [0.01588, -0.00215], "helical": [0.02916, -0.00886]},
+      "gas":    {"annular": [0.02202, -0.00287], "helical": [0.04306, -0.01318]},
+      "form": "alpha = a * (pitch - width) / depth + b"
+    },
+    "beta": {"a": 0.2987, "b": -0.0313, "form": "beta = a * (width * depth / pitch^2) + b"},
+    "bend": {"a": 7.898, "n": 0.896, "form": "f/f0 = 1 + a * (D / R_B)^n over the bent arc"},
+    "validity": {
+      "re_liquid": [6000, 380000],
+      "re_gas": [14000, 580000],
+      "gas_velocity_max_m_s": 42.672,
+      "D_m": [0.013589, 0.0790194],
+      "pitch_param": {"annular": [0.26, 0.79], "helical": [0.50, 0.75]},
+      "shape_param": [0.32, 0.83],
+      "bend_D_over_R_max": 0.0787
+    },
+    "fit_fluid": {"liquid": "water (40-80 F)", "gas": "air (20-50 psig inlet, 50-120 F)"}
+  },
+  "hawthorne": {
+    "citation": "R. C. Hawthorne & H. C. von Helms, 'Fluid expansion theory computes flow in corrugated hose', Product Engineering, June 10 1963, pp. 98-100. Eq. 2-6.",
+    "verified": false,
+    "k_over_pitch": 0.219,
+    "form": "C = [1 - (D/(D + 2k))^2]^2 per corrugation, k = 0.219 * pitch; dP = (N*C + C_B) * rho V^2 / 2",
+    "validity": {
+      "re": [24000, 1320000],
+      "pitch_m": [0.003175, 0.009525],
+      "D_m": [0.019431, 0.113284]
+    },
+    "accuracy_vs_own_tests": [-0.39, 0.36]
+  }
+}

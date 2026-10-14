@@ -32,6 +32,10 @@ UNIT_SYSTEMS: dict[str, dict[str, str]] = {
         "pressure": "psi",
         "speed": "mph",
         "area_load": "psf",
+        "mass_flow": "lb/hour",
+        "volume_flow": "gallon/minute",
+        "velocity": "ft/s",
+        "viscosity": "cP",
     },
     "SI": {
         "temperature": "degC",
@@ -49,6 +53,10 @@ UNIT_SYSTEMS: dict[str, dict[str, str]] = {
         "pressure": "kPa",
         "speed": "m/s",
         "area_load": "kPa",
+        "mass_flow": "kg/s",
+        "volume_flow": "m**3/hour",
+        "velocity": "m/s",
+        "viscosity": "cP",
     },
 }
 
@@ -69,6 +77,10 @@ SI_UNITS: dict[str, str] = {
     "pressure": "Pa",
     "speed": "m/s",
     "area_load": "Pa",
+    "mass_flow": "kg/s",
+    "volume_flow": "m**3/s",
+    "velocity": "m/s",
+    "viscosity": "Pa*s",
 }
 
 

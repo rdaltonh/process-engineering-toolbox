@@ -33,6 +33,8 @@ _WARNING_TITLES = {
     "ASSUMPTION": "Assumption",
     "HIGH_SH": "Occasional-factor note",
     "PRESSURE_LIMIT": "Pressure limit",
+    "NEAR_SATURATION": "Near saturation",
+    "INVALID_RESULT": "Invalid result",
     "INFO": "Info",
 }
 

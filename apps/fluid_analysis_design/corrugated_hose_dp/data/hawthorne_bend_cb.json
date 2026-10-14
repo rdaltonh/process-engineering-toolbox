@@ -1,0 +1,28 @@
+{
+  "description": "90-degree bend loss coefficient C_B vs bend-centerline radius / D for corrugated hose (velocity head at D).",
+  "citation": "R. C. Hawthorne & H. C. von Helms, 'Fluid expansion theory computes flow in corrugated hose', Product Engineering, June 10 1963, p. 99, 'Calculated 90-deg-bend loss coefficient, C_B'.",
+  "method": "Digitized by Claude 2026-10-13 from a 400 dpi render of the scan; gridline detection with per-axis skew correction; overlay checked visually. Reading uncertainty about +/-0.005.",
+  "verified": false,
+  "chart_limit_r_over_D": 0.5,
+  "points": [
+    {"r_over_D": 0.70, "C_B": 0.455, "dashed": true},
+    {"r_over_D": 0.80, "C_B": 0.428, "dashed": true},
+    {"r_over_D": 0.90, "C_B": 0.405, "dashed": true},
+    {"r_over_D": 1.00, "C_B": 0.381, "dashed": false},
+    {"r_over_D": 1.25, "C_B": 0.328, "dashed": false},
+    {"r_over_D": 1.50, "C_B": 0.284, "dashed": false},
+    {"r_over_D": 1.75, "C_B": 0.246, "dashed": false},
+    {"r_over_D": 2.00, "C_B": 0.217, "dashed": false},
+    {"r_over_D": 2.25, "C_B": 0.187, "dashed": false},
+    {"r_over_D": 2.50, "C_B": 0.164, "dashed": false},
+    {"r_over_D": 2.75, "C_B": 0.144, "dashed": false},
+    {"r_over_D": 3.00, "C_B": 0.126, "dashed": false},
+    {"r_over_D": 3.25, "C_B": 0.111, "dashed": false},
+    {"r_over_D": 3.50, "C_B": 0.099, "dashed": false},
+    {"r_over_D": 3.75, "C_B": 0.089, "dashed": false},
+    {"r_over_D": 4.00, "C_B": 0.082, "dashed": false},
+    {"r_over_D": 4.25, "C_B": 0.076, "dashed": true},
+    {"r_over_D": 4.50, "C_B": 0.074, "dashed": true},
+    {"r_over_D": 5.00, "C_B": 0.074, "dashed": true}
+  ]
+}

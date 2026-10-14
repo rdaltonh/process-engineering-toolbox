@@ -1,0 +1,7 @@
+id = "corrugated_hose_dp"
+name = "Corrugated Hose ΔP"
+category = "fluid_analysis_design"
+status = "available"
+version = "0.1.0"
+entry = "app.py"
+description = "Pressure drop through corrugated metal hose with bends (LSU NASA-CR-62061 and Hawthorne 1963), liquid or gas via CoolProp, with a ΔP vs flow plot."

@@ -100,3 +100,16 @@ Tube OD and wall are the ordered dimensions, so they're exact by definition. Two
 
 - [ ] **Wall tolerance 10%** (ASTM A269), applied when mill tolerance is on. Pipe stays at 12.5%.
 - [ ] **Sh for A269 tube** assumed equal to the A312 pipe value of the same grade (Table A-1)
+
+## Corrugated Hose ΔP: `apps/fluid_analysis_design/corrugated_hose_dp/data/`
+
+All sources are in `_inbox/`. Set `"verified": true` in each file once it has been checked.
+
+- [ ] **`correlations.json` → `lsu`:** LSU Vol. I (NASA-CR-62061), pp. 2–3 and 29–35.
+  - α coefficients: water annular 0.01588/−0.00215, water helical 0.02916/−0.00886, air annular 0.02202/−0.00287, air helical 0.04306/−0.01318.
+  - β = 0.2987·σε/λ² − 0.0313.
+  - Bend: f/f₀ = 1 + 7.898·(D/R_B)^0.896.
+  - Validity ranges (pp. 21, 32, 36).
+- [ ] **`correlations.json` → `hawthorne`:** Hawthorne 1963, p. 100. k = 0.219·S. Tested ranges from the test table.
+- [ ] **`hawthorne_bend_cb.json`:** C_B vs r/D, digitized from the p. 99 chart. Spot-check a few points, e.g. r/D = 1 → 0.381, 2 → 0.217, 3 → 0.126, 4 → 0.082.
+- [ ] **Hawthorne sub-90° bend-angle exponent:** illegible in the scan; linear θ/90 is used meanwhile. Fill this in if you find a clean copy.
