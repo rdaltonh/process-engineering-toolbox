@@ -5,7 +5,7 @@ Self-hosted, FOSS-only suite of engineering calculation apps for cryogenic and g
 ## Setup
 ```
 python -m venv .venv
-.venv\Scripts\python -m pip install -e ".[dev]"
+.venv\Scripts\python -m pip install -e ".[dev,desktop]"   # "desktop" = pywebview, Windows app window only
 ```
 
 ## Run
@@ -18,9 +18,9 @@ Opens at http://localhost:8501, bound to localhost with telemetry off (`.streaml
 ```
 powershell -ExecutionPolicy Bypass -File desktop\Install.ps1
 ```
-This creates `.venv` if it is missing and adds **Process Engineering Toolbox** shortcuts to the Desktop and Start menu. The shortcut starts the server hidden and opens the toolbox in its own window (Edge/Chrome app mode). Closing the window stops the server, unless it was already running when you launched. The server log is in `%LOCALAPPDATA%\ProcessToolbox\server.log`.
+This creates `.venv` if it is missing and adds **Process Engineering Toolbox** shortcuts to the Desktop and Start menu. The shortcut starts the server hidden and opens the toolbox in a native window (pywebview on Edge WebView2); launching again just focuses that window. Closing the window stops the server, unless it was already running when you launched. The server log is in `%LOCALAPPDATA%\ProcessToolbox\server.log`.
 
-Updating needs no reinstall: the shortcut runs the repo in place, so after a `git pull` you just relaunch. The **Update toolbox** button at the bottom of the sidebar runs that pull (fast-forward only) for you and lists the new commits. If `pyproject.toml` has changed, the launcher re-runs `pip install -e ".[dev]"` (in a console window, log at `%LOCALAPPDATA%\ProcessToolbox\pip.log`) before it starts the server. To remove the shortcuts, run `Install.ps1 -Uninstall`. The icon comes from `desktop/make_icon.py`.
+Updating needs no reinstall: the shortcut runs the repo in place, so after a `git pull` you just relaunch. The **Update toolbox** button at the bottom of the sidebar runs that pull (fast-forward only) for you and lists the new commits. If `pyproject.toml` has changed, the launcher re-runs `pip install -e ".[dev,desktop]"` (in a console window, log at `%LOCALAPPDATA%\ProcessToolbox\pip.log`) before it starts the server. To remove the shortcuts, run `Install.ps1 -Uninstall`. The icon comes from `desktop/make_icon.py`.
 
 ## Test
 ```

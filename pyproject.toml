@@ -20,6 +20,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+# Native app window for the Windows desktop launcher (desktop/launch_toolbox.pyw)
+desktop = ["pywebview>=6.2; sys_platform == 'win32'"]
 
 [tool.setuptools]
 package-dir = { "proctoolbox_core" = "core" }
