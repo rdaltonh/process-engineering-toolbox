@@ -14,6 +14,14 @@ python -m venv .venv
 ```
 Opens at http://localhost:8501, bound to localhost with telemetry off (`.streamlit/config.toml`). Any app also runs standalone, e.g. `streamlit run apps/piping_structural/span_chart/app.py`.
 
+## Desktop app (Windows)
+```
+powershell -ExecutionPolicy Bypass -File desktop\Install.ps1
+```
+This creates `.venv` if it is missing and adds **Process Engineering Toolbox** shortcuts to the Desktop and Start menu. The shortcut starts the server hidden and opens the toolbox in its own window (Edge/Chrome app mode). Closing the window stops the server, unless it was already running when you launched. The server log is in `%LOCALAPPDATA%\ProcessToolbox\server.log`.
+
+Updating needs no reinstall: the shortcut runs the repo in place, so after a `git pull` you just relaunch. If `pyproject.toml` has changed, the launcher re-runs `pip install -e ".[dev]"` (in a console window, log at `%LOCALAPPDATA%\ProcessToolbox\pip.log`) before it starts the server. To remove the shortcuts, run `Install.ps1 -Uninstall`. The icon comes from `desktop/make_icon.py`.
+
 ## Test
 ```
 .venv\Scripts\python -m pytest

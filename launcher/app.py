@@ -18,7 +18,9 @@ from proctoolbox_core.ui import CATEGORIES, STATUS_LABELS
 ROOT = Path(__file__).resolve().parent.parent
 APPS_DIR = ROOT / "apps"
 
-st.set_page_config(page_title="Process Engineering Toolbox", layout="wide")
+st.set_page_config(
+    page_title="Process Engineering Toolbox", page_icon=str(ROOT / "desktop" / "toolbox.png"), layout="wide",
+)
 
 
 def discover_apps() -> dict[str, list[dict]]:
