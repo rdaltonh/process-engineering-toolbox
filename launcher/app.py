@@ -13,6 +13,7 @@ from pathlib import Path
 
 import streamlit as st
 
+import updater
 from proctoolbox_core.ui import CATEGORIES, STATUS_LABELS
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -71,5 +72,28 @@ nav: dict[str, list[st.Page]] = {"": [st.Page(home, title="Home", default=True)]
 for cat_id, cat_apps in apps_by_cat.items():
     if cat_apps:
         nav[CATEGORIES[cat_id]] = [pages[m["id"]] for m in cat_apps]
+
+def update_panel() -> None:
+    """Sidebar footer: current version and a git-pull update button."""
+    st.divider()
+    st.caption(f"Version {updater.current_version(ROOT)}")
+    if not st.button("Update toolbox", icon=":material/system_update_alt:", key="update_toolbox",
+                     help="Pull the latest version from GitHub (git pull)."):
+        return
+    with st.spinner("Checking for updates…"):
+        result = updater.pull(ROOT)
+    if not result.ok:
+        st.error(f"Update failed: {result.message}")
+    elif not result.commits:
+        st.info(result.message)
+    else:
+        lines = "\n".join(f"- {c}" for c in result.commits[:10])
+        more = f"\n- …and {len(result.commits) - 10} more" if len(result.commits) > 10 else ""
+        deps = " New Python packages will install automatically when it starts." if result.deps_changed else ""
+        st.success(f"{result.message}\n\n{lines}{more}\n\n**Close and reopen the toolbox to apply.**{deps}")
+
+
+with st.sidebar:
+    update_panel()
 
 st.navigation(nav).run()
